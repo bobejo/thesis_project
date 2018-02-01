@@ -1,20 +1,16 @@
 import glob
-import os
 
 import cv2
 
 
 def crop_images(path):
-    image_list = glob.glob(path)
-    print(image_list)
-    for image in image_list:
-        img = cv2.imread(image, 1)
+    image_path_list = glob.glob(path)
+    for image_path in image_path_list:
+        img = cv2.imread(image_path, 1)
         cropped_image = img[100:200, 20:150]
-        print('Size of the  image:' + str(img.shape))
-        print('Size of the cropped image:' + str(cropped_image.shape))
-        os.system('cd cropped_images')
-        os.system('pwd')
-        cv2.imwrite(image, cropped_image)
+        a, b = image_path.split("images/")
+        image_path = a + "images/" + "cropped_images/" + b
+        cv2.imwrite(image_path, cropped_image)
 
 
-crop_images("/home/saming/Documents/Master/images/*.jpg")
+crop_images('/home/saming/PycharmProjects/thesis_project/computer_vision/images/*.jpg')
