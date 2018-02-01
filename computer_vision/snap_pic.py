@@ -3,10 +3,6 @@ import time as time
 from time import gmtime
 
 
-def main():
-    snap_pic(1, "Big_pipe")
-
-
 def snap_pic(nr_images, name):
     t = get_time()
     for x in xrange(1, nr_images + 1):
@@ -22,4 +18,4 @@ def get_time():
     return t[13:21]
 
 
-main()
+snap_pic(1, "Big_pipe")
