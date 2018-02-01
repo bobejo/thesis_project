@@ -23,4 +23,3 @@ def get_time():
 
 
 main()
-"imges/left14:15:00.jpg"
