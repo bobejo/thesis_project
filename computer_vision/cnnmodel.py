@@ -20,8 +20,13 @@ y_train_path='C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\comp
 img_rows, img_cols = 500, 350
 
 
-def img2numpy():
-    #
+def imgs2numpy():
+    """
+    Converts all the images of the two paths to two numpy arrays and
+    saves them
+
+    :return:
+    """
     x_path_list = glob.glob(x_train_path)
     y_path_list = glob.glob(y_train_path)
 
@@ -55,12 +60,20 @@ def img2numpy():
 
 
 def train_model():
+    """
+    Loads the training and test data.
+    Creates the model with the loss function and optimizer
+    Trains the model with the training data.
+    :return:
+    """
     x_train=np.load('xtrain.npy')
     y_train=np.load('ytrain.npy')
 
     # Will be another set of data later
     x_test=x_train
     y_test=y_train
+    # x_test=np.load('xtest.npy')
+    #y_test = np.load('ytest.npy')
 
     # Some versions take the channel first and some last
     if K.image_data_format() == 'channels_first':
@@ -101,4 +114,17 @@ def train_model():
 
     # Save the model and all the weights
     model.save('funcmodel.h5')
+
+
+def get_prediction():
+    """
+    Load the model with precomputed weights and does prediction with the loaded images
+
+    :return: The outputed images from the keras prediction
+    """
+    model = keras.load_model('funcmodel.h5')
+    x_train = np.load('xtrain.npy')
+    predictions = model.predict(x_train, batch_size=1, verbose=1)
+
+    return predictions
 
