@@ -1,20 +1,31 @@
 from __future__ import print_function
-import keras
-#from keras.layers import Dense, Dropout, Flatten, Activation, Reshape
-from keras.layers import Conv2D
-from keras import backend as K
+
+import glob
 
 import cv2
-import glob
+import keras
 import numpy as np
+from keras import backend as K
+# from keras.layers import Dense, Dropout, Flatten, Activation, Reshape
+from keras.layers import Conv2D
+from keras.models import load_model
 
 # Tensorflow dimension ordering
 K.set_image_dim_ordering('tf')
 
+# Number of epochs the training should run
 epochs = 12
+
 # Path where the cropped images and training data is
+# Windows
 x_train_path='C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\cropped_images\\*.jpg'
 y_train_path='C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\training_data\\*.jpg'
+# Ubuntu
+# x_train_path='/home/saming/PycharmProjects/thesis_project/computer_vision/images/cropped_images/*.jpg'
+# y_train_path='/home/saming/PycharmProjects/thesis_project/computer_vision/images/training_data/*.jpg'
+
+
+
 
 # input image dimensions
 img_rows, img_cols = 500, 350
@@ -30,7 +41,9 @@ def imgs2numpy():
     x_path_list = glob.glob(x_train_path)
     y_path_list = glob.glob(y_train_path)
 
-    first=1
+    first= 1
+    x_train = 0
+    y_train = 0
     for ximg in x_path_list:
         if first:
             x_train = cv2.imread(ximg)
@@ -42,9 +55,9 @@ def imgs2numpy():
             img = img.reshape([1, img_rows, img_cols, 3])
             x_train = np.concatenate((x_train, img), 0)
 
-
     first = 1
     for yimg in y_path_list:
+
         if first:
             y_train = cv2.imread(yimg)
             y_train = y_train.reshape([1, img_rows, img_cols, 3])
@@ -79,11 +92,10 @@ def train_model():
     if K.image_data_format() == 'channels_first':
         x_train = x_train.reshape(x_train.shape[0], 3, img_rows, img_cols)
         y_train = y_train.reshape(y_train.shape[0], 3, img_rows, img_cols)
-        input_shape = (1, img_rows, img_cols)
+
     else:
         x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 3)
         y_train = y_train.reshape(y_train.shape[0], img_rows, img_cols, 3)
-        input_shape = (img_rows, img_cols, 1)
 
     # Make to float and normalise
     x_train = x_train.astype('float32')
@@ -91,7 +103,7 @@ def train_model():
     y_train = y_train.astype('float32')
     y_train /= 255
 
-    inputs = keras.Input(shape=(500,350,3))
+    inputs = keras.Input(shape=(img_rows, img_cols, 3))
     x1=Conv2D(30, (3, 3), padding='same', activation='relu')(inputs)
     x2=Conv2D(20, (3, 3), padding='same', activation='relu')(x1)
     x3=Conv2D(20, (9, 9), padding='same', activation='relu')(x2)
@@ -122,9 +134,8 @@ def get_prediction():
 
     :return: The outputed images from the keras prediction
     """
-    model = keras.load_model('funcmodel.h5')
+    model = load_model('funcmodel.h5')
     x_train = np.load('xtrain.npy')
     predictions = model.predict(x_train, batch_size=1, verbose=1)
 
     return predictions
-
