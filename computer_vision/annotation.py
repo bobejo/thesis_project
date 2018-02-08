@@ -27,7 +27,7 @@ drag_start = None
 sel = (0, 0, 0, 0)
 nr_clicked = 0
 drag_end = None
-save_path = '/home/saming/PycharmProjects/thesis_project/computer_vision/images/training_data/'
+save_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\training_data\\'
 
 
 def onmouse(event, x, y, flags, param):
@@ -45,10 +45,11 @@ def onmouse(event, x, y, flags, param):
         if flags & cv.EVENT_FLAG_LBUTTON:
             cv.line(img, drag_start, drag_end, (0, 255, 255), 2)
             cv.imshow("Annotation", img)
-            t = get_time()
-            cv.imwrite(save_path + t + '_training.jpg', img)
+
         else:
             print("selection is complete")
+            t = get_time()
+            cv.imwrite(save_path + t + '_training.jpg', img)
             drag_start = None
             drag_end = None
             nr_clicked = 0
@@ -59,7 +60,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Demonstrate mouse interaction with images')
     parser.add_argument("-i", "--input",
-                        default='/home/saming/PycharmProjects/thesis_project/computer_vision/images/cropped_images',
+                        default='C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\cropped_images',
                         help="Input directory.")
     args = parser.parse_args()
     path = args.input
