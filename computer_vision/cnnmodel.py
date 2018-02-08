@@ -1,12 +1,14 @@
 from __future__ import print_function
-import keras
-#from keras.layers import Dense, Dropout, Flatten, Activation, Reshape
-from keras.layers import Conv2D
-from keras import backend as K
+
+import glob
 
 import cv2
-import glob
+import keras
 import numpy as np
+from keras import backend as K
+# from keras.layers import Dense, Dropout, Flatten, Activation, Reshape
+from keras.layers import Conv2D
+from keras.models import load_model
 
 # Tensorflow dimension ordering
 K.set_image_dim_ordering('tf')
@@ -91,7 +93,7 @@ def train_model():
     y_train = y_train.astype('float32')
     y_train /= 255
 
-    inputs = keras.Input(shape=(500,350,3))
+    inputs = keras.Input(shape=(img_rows, img_cols, 3))
     x1=Conv2D(30, (3, 3), padding='same', activation='relu')(inputs)
     x2=Conv2D(20, (3, 3), padding='same', activation='relu')(x1)
     x3=Conv2D(20, (9, 9), padding='same', activation='relu')(x2)
@@ -122,7 +124,7 @@ def get_prediction():
 
     :return: The outputed images from the keras prediction
     """
-    model = keras.load_model('funcmodel.h5')
+    model = load_model('funcmodel.h5')
     x_train = np.load('xtrain.npy')
     predictions = model.predict(x_train, batch_size=1, verbose=1)
 
