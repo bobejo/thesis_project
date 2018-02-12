@@ -21,15 +21,16 @@ import os
 import cv2 as cv
 import numpy as np
 
-from snap_pic import get_time
-
 drag_start = None
 sel = (0, 0, 0, 0)
 nr_clicked = 0
 drag_end = None
-save_path = '/home/saming/PycharmProjects/thesis_project/computer_vision/images/training_data/'
-image_path = '/home/saming/PycharmProjects/thesis_project/computer_vision/images/cropped_images'
+save_path = '/home/saming/thesis_project/computer_vision/images/training_data/'
+image_path = '/home/saming/thesis_project/computer_vision/images/cropped_images/*.jpg'
+move_path= '/home/saming/thesis_project/computer_vision/images/cropped_images/Annotated/'
 drags = []
+i=1
+
 def onmouse(event, x, y, flags, param):
     global drag_start, sel, nr_clicked, drag_end
     if event == cv.EVENT_LBUTTONDOWN and nr_clicked < 2:
@@ -47,7 +48,7 @@ def onmouse(event, x, y, flags, param):
             cv.imshow("Annotation", img)
 
         else:
-            print("selection is complete")
+           # print("selection is complete")
             drags.append([drag_start, drag_end])
             drag_start = None
             drag_end = None
@@ -67,7 +68,9 @@ if __name__ == '__main__':
     cv.namedWindow("Annotation", 1)
     cv.setMouseCallback("Annotation", onmouse)
     '''Loop through all the images in the directory'''
-    for infile in glob.glob(os.path.join(path, '*.*')):
+    allfiles=glob.glob(path)
+    print(len(allfiles))
+    for infile in allfiles:
 
         ext = os.path.splitext(infile)[1][1:]  # get the filename extension
         if ext == "png" or ext == "jpg" or ext == "bmp" or ext == "tiff" or ext == "pbm":
@@ -76,18 +79,27 @@ if __name__ == '__main__':
                 continue
             sel = (0, 0, 0, 0)
             drag_start = None
-            cv.imshow("Annotation", img)
+            cv.imshow('Annotation', img)
             if cv.waitKey() == 27:
                 break
 
-            t = get_time()
             blank_image = np.zeros((500, 350, 3), np.uint8)
+            blank_image[:, :] = (100, 0, 0)
             for d in drags:
-                cv.line(blank_image, d[0], d[1], (255, 255, 255), 3)
+                cv.line(blank_image, d[0], d[1], (255, 255, 255), 10)
+                #cv.circle(blank_image, (d[0]), 10, (255, 255, 255), -1)
 
             oldimg = infile.split('cropped_images/')
-            cv.imwrite(save_path + oldimg[1], cv.GaussianBlur(blank_image, (9, 9), 0))
+            print(i)
+            i+=1
+            cv.imwrite(save_path + oldimg[1], blank_image)
             drags = []
+            drag_start = None
+            drag_end = None
+            nr_clicked = 0
+            a = infile.split("cropped_images/")
+            new_move_path = move_path + a[1]
+            os.rename(infile, new_move_path)
 
 
 cv.destroyAllWindows()
