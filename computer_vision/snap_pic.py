@@ -3,7 +3,7 @@ import time as time
 from time import gmtime
 
 
-def snap_pic(nr_images, name):
+def snap_pic(name):
     """
     Takes two images one for each camera and saves them to the images/ folder
 
@@ -23,4 +23,4 @@ def get_time():
 
 
 # Choose name of pipe
-#snap_pic( "pipe")
+snap_pic("pipe")
