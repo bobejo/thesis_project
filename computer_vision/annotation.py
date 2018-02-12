@@ -4,7 +4,9 @@ Based on https://github.com/opencv/opencv/blob/master/samples/python/mouse_and_m
 
  Read in the images in a directory one by one
  Allow the user to select two points and then draw a line between them.
- For each line drawn it save it as an jpg
+ When done with the current image press SPACE to show next image.
+ When pressing SPACE it saves the annotation image as jpg in the save path and also moves the previous image to a
+ subfolder in the image path where the images which have been annotated are stored.
 
  SPACE for next image
  ESC to exit
