@@ -25,8 +25,12 @@ drag_start = None
 sel = (0, 0, 0, 0)
 nr_clicked = 0
 drag_end = None
-save_path = '/home/saming/thesis_project/computer_vision/images/training_data/'
-image_path = '/home/saming/thesis_project/computer_vision/images/cropped_images/*.jpg'
+# Linux
+save_path = '/home/saming/PycharmProjects/thesis_project/computer_vision/images/training_data/'
+image_path = '/home/saming/PycharmProjects/thesis_project/computer_vision/images/cropped_images'
+#Windows
+#save_path='C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\computer_vision\\images\\training_data'
+#image_path='C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\computer_vision\\images\\cropped_images'
 move_path= '/home/saming/thesis_project/computer_vision/images/cropped_images/Annotated/'
 drags = []
 i=1
@@ -69,7 +73,6 @@ if __name__ == '__main__':
     cv.setMouseCallback("Annotation", onmouse)
     '''Loop through all the images in the directory'''
     allfiles=glob.glob(path)
-    print(len(allfiles))
     for infile in allfiles:
 
         ext = os.path.splitext(infile)[1][1:]  # get the filename extension
