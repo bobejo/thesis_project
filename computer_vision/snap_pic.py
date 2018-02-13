@@ -1,7 +1,7 @@
 import os
 import time as time
 from time import gmtime
-
+save_path='/home/saming/thesis_project/computer_vision/images/Uncropped'
 
 def snap_pic(name):
     """
@@ -10,9 +10,9 @@ def snap_pic(name):
     :param name: Name of the file
     """
     t = get_time()
-    os.system('wget http://admin:admin@192.168.1.138/dms?nowprofileid=1 -O' "images/left" + name + t + ".jpg")
+    os.system('wget http://admin:admin@192.168.1.138/dms?nowprofileid=1 -O' ''+ save_path + "/left" + name + t + ".jpg")
     print("Picture 1 left is saved")
-    os.system('wget http://admin:@192.168.1.144/dms?nowprofileid=1 -O' "images/right" + name + t + ".jpg")
+    os.system('wget http://admin:@192.168.1.144/dms?nowprofileid=1 -O' ''+ save_path +"/right" + name + t + ".jpg")
     print("Picture 1 right is saved")
 
 
