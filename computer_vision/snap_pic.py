@@ -17,6 +17,11 @@ def snap_pic(name):
 
 
 def get_time():
+    """
+    Used for saving images with time in their name
+
+    :return: The current time in format: hour:minutes:seconds
+    """
     t = time.strftime("%a, %d %b %Y %H_%M_%S", gmtime())
     t = t.replace(" ", "")
     return t[13:21]
