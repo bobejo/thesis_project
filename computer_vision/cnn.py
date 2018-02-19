@@ -19,8 +19,8 @@ epochs = 1
 
 # Path where the cropped images and training data is
 # Windows
-x_train_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\cropped_images'
-y_train_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\target_data'
+x_train_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\inp'
+y_train_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\targ'
 x_test_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Verification\\x_test'
 y_test_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Verification\\y_test'
 # Ubuntu
@@ -123,6 +123,7 @@ def try_generator(generator):
 def create_generators(input_path, target_path, batch_size):
     """
     Creates a two generator with the training data (input images and target images) and returns a zipped generator.
+    The generator first rescales the input and target images and then randomly flips and shifts them in the same way.
 
     :param input_path:  The path of the input images that will be used.
     :param target_path: The path of the target images that wil be used.
@@ -131,7 +132,7 @@ def create_generators(input_path, target_path, batch_size):
     """
 
     # The arguments
-    data_gen_args = dict(rescale=1. / 255)
+    data_gen_args = dict(rescale=1. / 255,vertical_flip=True, horizontal_flip=True,width_shift_range=0.03,height_shift_range=0.03)
 
     input_datagen = ImageDataGenerator(**data_gen_args)
     target_datagen = ImageDataGenerator(**data_gen_args)
@@ -236,5 +237,5 @@ def compare_images(model, x_path, y_path):
 # compare_images()
 
 
-train = create_generators(x_train_path, y_train_path)
+train = create_generators(x_train_path, y_train_path,1)
 try_generator(train)
