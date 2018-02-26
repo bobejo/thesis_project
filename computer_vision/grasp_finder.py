@@ -204,10 +204,6 @@ def find_contact_points(img, center):
     coord = (0, 0)
     combinations=create_square(i)
 
-
-
-
-
     prev_combinations = [(0, 0)]
     for i in range(1, 10):
         if len(contacts) > 1:
