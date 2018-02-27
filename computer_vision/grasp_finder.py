@@ -197,35 +197,39 @@ def find_contact_points(img, center):
     :param center: The center of the previously extracted blob
     :return: The two contacts points
     """
-    print(center)
-    remove = 0
+    print('Center '+str(center))
     contacts = []
-    removed = []
-    coord = (0, 0)
-    combinations=create_square(i)
-
-    prev_combinations = [(0, 0)]
+    ind=0
+    removed=[]
     for i in range(1, 10):
         if len(contacts) > 1:
             print('Contact points found')
+            cv2.circle(img,contacts[0],2,100,3)
+            cv2.circle(img,contacts[1],2,100,3)
+
+            cv2.imshow('image',img)
+            cv2.waitKey(0)
             return contacts
-        if remove:
-            ind=combinations.index(remove)
-            print(removed)
 
         combinations = create_square(i)
 
         if ind:
+            new_ind=ind*2
+            removed=np.arange(new_ind-i-2,new_ind+i+3)
 
-
+        combinations=[i for j, i in enumerate(combinations) if j not in removed]
+        print(removed)
+        print(combinations)
         for w, h in combinations:
             coord = (center[0] + w, center[1] + h)
 
             if img[coord[1]][coord[0]] == 0:
+                print('Square coordinates '+str(w)+' '+str(h))
                 print('Found, removing next loop')
+                print(str(coord[1])+'   '+str(coord[0]))
                 contacts.append((coord[0], coord[1]))
                 # print(contacts)
-                remove = (w,h)
+                ind = combinations.index((w,h))
                 break
 
     return False
@@ -244,12 +248,6 @@ def create_square(size):
     left.reverse()
     square=top+right[1:]+bottom[1:]+left[1:-1]
 
-    print(square)
-    print('=================')
-    print('top'+str(top))
-    print('right' + str(right))
-    print('bottom' + str(bottom))
-    print('left' + str(left))
     return square
 
 def triangulate_point(lpoint, rpoint, left_cm, right_cm):
