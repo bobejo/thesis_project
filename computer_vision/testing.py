@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 from matplotlib import pyplot as plt
 from grasp_finder import featurematching_coordinates, least_square_solver, affine_transformation, triangulate_point
-from grasp_finder import binary_image, dilate_image, image_segmentation, blob_detector, find_contact_points
+from grasp_finder import binary_image, dilate_image, image_segmentation, blob_detector, find_contact_points, create_square
 from keras.models import load_model
 import cnn
 from Loss import LogLoss, accuracy
@@ -137,7 +137,9 @@ def test_contact_points():
     k = blob_detector(di)
 
     pt=(int(k[-1].pt[0]),int(k[-1].pt[1]))
-    find_contact_points(di,pt)
+    cp=find_contact_points(di,pt)
+    print(cp)
 
-
+#sq=create_square(5)
+#print(sq)
 test_contact_points()
