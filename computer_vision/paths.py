@@ -13,6 +13,11 @@ y_train_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\co
 x_test_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\input'
 y_test_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\target'
 
+# Used for affine transformation
+test_path_right = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\inp\\right\\right\\rightpipe08_41_37_2.jpg'
+test_path_left = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\inp\\left\\left\\leftpipe08_41_37_2.jpg'
+
+
 # The path to the model
 model_path='C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\computer_vision\\models\\simple_model.h5'
 

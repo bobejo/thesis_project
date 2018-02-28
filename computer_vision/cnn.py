@@ -11,44 +11,13 @@ from keras.layers import Dense, Dropout, Flatten, Activation, Reshape
 from keras.layers import Conv2D
 from keras.models import load_model
 from keras.preprocessing.image import ImageDataGenerator
+import paths
 
 # Tensorflow dimension ordering
 K.set_image_dim_ordering('tf')
 
-# Number of epochs the training should run
-epochs = 1
-
-# Path where the cropped images and training data is
-# Windows
-x_train_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\cropped_images'
-y_train_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\target_data'
-x_test_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Verification\\x_test'
-y_test_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Verification\\y_test'
-# x_test_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\inp'
-# y_test_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\targ'
-
-# Ubuntu
-# x_train_path='/home/saming/thesis_project/computer_vision/images/cropped_images/*.jpg'
-# y_train_path='/home/saming/thesis_project/computer_vision/images/training_data/*.jpg'
-# rotatex_path='home/saming/thesis_project/computer_vision/images/cropped_images/Rotated/*.jpg'
-# rotatey_path='/home/saming/thesis_project/computer_vision/images/training_data/Rotated/*.jpg'
-
-
 # input image dimensions
 img_rows, img_cols = 550, 400
-
-
-def try_generator(generator):
-    """
-    Grabs an output from the generator and plots it.
-
-    :param generator: The generator you want to try.
-    """
-    for i in range(0, 100):
-        x, y = next(generator)
-        cv2.imshow('x', x[0])
-        cv2.imshow('y', y[0])
-        cv2.waitKey(0)
 
 
 def create_generators(input_path, target_path, batch_size):
@@ -63,7 +32,8 @@ def create_generators(input_path, target_path, batch_size):
     """
     #
     # The arguments
-    data_gen_args = dict(rescale=1. / 255, horizontal_flip=True, vertical_flip=True, width_shift_range=0.03,height_shift_range=0.03)
+    data_gen_args = dict(rescale=1. / 255, horizontal_flip=True, vertical_flip=True, width_shift_range=0.03,
+                         height_shift_range=0.03)
 
     input_datagen = ImageDataGenerator(**data_gen_args)
     target_datagen = ImageDataGenerator(**data_gen_args)
@@ -92,27 +62,30 @@ def create_generators(input_path, target_path, batch_size):
     return train_generator
 
 
-def train_model(batch_size, steps_per_epoch, training_epochs):
+def train_model(x_train_path,y_train_path,x_test_path,y_test_path,batch_size, steps_per_epoch, training_epochs):
     """
     Creates the model with the loss function and optimizer
     Creates the generators for generating input and target images
-    Trains the model with the training data and saves it when done
+    Trains the model with the training data and saves it when done.
 
+    :param x_train_path: The path of the input training images
+    :param y_train_path: The path of the target training images
+    :param x_test_path: The path of the input validation images
+    :param y_test_path: The path of the target validation images
     :param batch_size: The number of images to be generated per batch
     :param steps_per_epoch: The number of images used per epoch
     :param epochs: The number of epochs the training is done for
     """
 
     model = create_simple_model()
-    model.summary()
-
     train_generator = create_generators(x_train_path, y_train_path, batch_size)
     test_generator = create_generators(x_test_path, y_test_path, batch_size)
-    model.fit_generator(train_generator, steps_per_epoch=steps_per_epoch, epochs=training_epochs, validation_data=test_generator,
+
+    model.fit_generator(train_generator, steps_per_epoch=steps_per_epoch, epochs=training_epochs,
+                        validation_data=test_generator,
                         validation_steps=200 / batch_size)
 
-    # Save the model and all the weights
-    model.save('segmenttest.h5')
+    model.save('models\\simple_model.h5')
     print('Model saved')
 
 
@@ -139,46 +112,15 @@ def create_simple_model():
 
 def get_prediction(model, x_test):
     """
-    Does keras.predictin with the testing data.
+    Does keras.prediction with the testing data.
 
     :param model: The model the prediction will be done on
     :param x_test: The testing images as numpy arrays
     :return: p: The prediction output
     """
-    if x_test.shape == (500, 350, 3):
-        x_test.reshape(1, 500, 350, 3)
+    if len(x_test.shape) < 4:
+        x_test.reshape(1, x_test.shape[0], x_test.shape[1], x_test.shape[2])
     p = model.predict(x_test, batch_size=2, verbose=1)
     return p
 
 
-def compare_images(model, x_path, y_path):
-    """
-    Plots the input, target and prediction images.
-    Runs get_prediction() to get the prediction.
-
-    Press ANY button to change images.
-    ESC to exit
-
-    :param model: The model the prediction will be done on
-    :param x_path: The path to the testing input images
-    :param y_path: The path to the target images
-    """
-
-    x_test = img_numpy.imgs2numpy(x_path, 100)
-    y_test = img_numpy.imgs2numpy(y_path, 100)
-    p = get_prediction(model, x_test)
-    for i in range(0, 100):
-        # ga = get_activations(model, x_test[i].reshape(1,500,350,3))
-        # display_activations(ga)
-        cv2.imshow('input', x_test[i])
-        cv2.imshow('target', y_test[i])
-        cv2.imshow('output', p[i])
-        cv2.waitKey(0)
-
-
-#train_model(2, 250, 4)
-#model=load_model('segmenttest.h5', custom_objects={'logloss': logloss})
-#compare_images(model, x_test_path+'\\test\\*.jpg', y_test_path+'\\test\\*.jpg')
-
-# testgen=create_generators(x_test_path, y_test_path, 1)
-# try_generator(testgen)

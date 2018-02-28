@@ -21,10 +21,7 @@ def imgs2numpy(imgs_path,maximum_imgs):
     for img in image_list:
         if i==0:
             first_img=cv2.imread(img) / 255
-            if first_img.shape[2] == 3:
-                np_img=np.empty((len(image_list),500,350,3))
-            else:
-                np_img = np.empty((len(image_list), 500, 350, 1))
+            np_img=np.empty((len(image_list), first_img.shape[0], first_img.shape[1], first_img.shape[2]))
             np_img[i] = first_img
             i += 1
         else:

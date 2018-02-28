@@ -7,7 +7,7 @@ def snap_pic(name):
     """
     Takes two images one for each camera and saves them to the images/ folder
 
-    :param name: Name of the file
+    :param name: Save name of the file
     """
     t = get_time()
     os.system('wget http://admin:admin@192.168.1.138/dms?nowprofileid=1 -O' ''+ save_path + "/left" + name + t + ".jpg")
@@ -28,4 +28,4 @@ def get_time():
 
 
 # Choose name of pipe
-snap_pic("pipe")
+#snap_pic("pipe")

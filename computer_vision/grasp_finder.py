@@ -1,4 +1,3 @@
-# Standard imports
 import cv2
 import numpy as np;
 from keras.models import load_model
@@ -53,12 +52,29 @@ def image_segmentation(img, threshold, size):
     return dim
 
 
+def contour_detector(img):
+    """
+    Finds the contour of the dilated image.
+
+    :param img: Dilated image
+    :return: The contour of the image
+    """
+    cv2.imshow('img', img)
+    im2, contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    cv2.drawContours(im2, contours, -1, (0, 255, 0), 3)
+    cv2.imshow('im2', im2)
+    # cv2.imshow('cont',contours)
+    print(dir(contours[0]))
+    cv2.waitKey(0)
+    return im2
+
+
 def blob_detector(img):
     """
-    Plots the blobs of the image
+    Creates a blob detector and uses it to find the blobs of the binary image
 
     :param img: Binary dilated image
-    :return:
+    :return: The keypoints for the blobs
     """
     # Settings for blobdetector
     params = cv2.SimpleBlobDetector_Params()
@@ -69,8 +85,8 @@ def blob_detector(img):
     params.minThreshold = 0
     params.maxThreshold = 255
     params.thresholdStep = 10
-    # params.filterByArea = True
-    # params.minArea = 100
+    params.filterByArea = True
+    params.minArea = 200
     # params.maxArea = 5000
     params.minDistBetweenBlobs = 1
 
@@ -79,9 +95,7 @@ def blob_detector(img):
     keypoints.sort(key=operator.attrgetter('size'))
 
     k = keypoints
-    im_with_keypoints = cv2.drawKeypoints(img, keypoints, np.array([]), (0, 0, 255),
-                                          cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    # cv2.imshow("Keypoints", im_with_keypoints)
+
     return k
 
 
@@ -92,8 +106,8 @@ def affine_transformation(A, t, lpoints):
 
     :param A: Transformation matrix (2x2)
     :param t: Translation vector
-    :param lpoints:
-    :return:
+    :param lpoints: Points from left image
+    :return: The corresponding points in the right image
     """
 
     mul = np.matmul(A.reshape(2, 2), lpoints)
@@ -155,7 +169,7 @@ def affine_transformation_solver(lpoints, rpoints):
 
 def featurematching_coordinates(limg, rimg, threshold=10):
     """
-    Extracts features from each image prediction and matches them with eachother to find similarities.
+    Extracts features from each image prediction and matches them with each other to find similarities.
     Sorts the matches and returns all coordinates off all matches
 
     :param limg:   The image from the left camera
@@ -174,14 +188,12 @@ def featurematching_coordinates(limg, rimg, threshold=10):
     matches = bf.match(des1, des2)
     good = []
 
+    # Only take those with a good match
     for m in matches:
         if m.distance < threshold:
             good.append([m])
 
     good = sorted(good, key=lambda x: x[0].distance)
-
-    img3 = cv2.drawMatchesKnn(img1, kp1, img2, kp2, good, cv2.DRAW_MATCHES_FLAGS_DEFAULT)
-    # plt.imshow(img3), plt.show()
 
     left_coord = [kp1[mat[0].queryIdx].pt for mat in good]
     right_coord = [kp2[mat[0].trainIdx].pt for mat in good]
@@ -191,68 +203,77 @@ def featurematching_coordinates(limg, rimg, threshold=10):
 
 def find_contact_points(img, center):
     """
-    Finds the two contact points for the gripper
+    Finds the two contact points for the gripper.
+    If one point is found it stops looking at that side.
 
     :param img: The binary dilated image as numpy
     :param center: The center of the previously extracted blob
     :return: The two contacts points
     """
-    print('Center '+str(center))
+
     contacts = []
-    ind=0
-    removed=[]
+    ind = 0
+    removed = []
+
     for i in range(1, 10):
         if len(contacts) > 1:
-            print('Contact points found')
-            cv2.circle(img,contacts[0],2,100,3)
-            cv2.circle(img,contacts[1],2,100,3)
-
-            cv2.imshow('image',img)
-            cv2.waitKey(0)
             return contacts
 
         combinations = create_square(i)
 
         if ind:
-            new_ind=ind*2
-            removed=np.arange(new_ind-i-2,new_ind+i+3)
+            new_ind = ind * 2
+            removed = np.arange(new_ind - i * 3 - 1, new_ind + i * 3 + 1)
 
-        combinations=[i for j, i in enumerate(combinations) if j not in removed]
-        print(removed)
-        print(combinations)
+        combinations = [i for j, i in enumerate(combinations) if j not in removed]
+
         for w, h in combinations:
             coord = (center[0] + w, center[1] + h)
 
             if img[coord[1]][coord[0]] == 0:
-                print('Square coordinates '+str(w)+' '+str(h))
-                print('Found, removing next loop')
-                print(str(coord[1])+'   '+str(coord[0]))
                 contacts.append((coord[0], coord[1]))
-                # print(contacts)
-                ind = combinations.index((w,h))
+                ind = combinations.index((w, h))
                 break
 
-    return False
+    return None
+
+
 def create_square(size):
-    top=[]
+    """
+    Creates a square of coordinates around (0,0) used for find_contact_points
+
+    example of size 1
+    [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1)]
+
+    (-1, -1) (-1, 0)  (-1, 1)
+    (0, -1)  (0, 0)   (0, 1)
+    (1, -1)  (1, 0)   (1, 1)
+
+    :param size: The length from the center (0,0)
+    :return: List of coordinates starting at (-size,-size)
+    """
+    top = []
     right = []
     bottom = []
     left = []
-    aranged=np.arange(-size, size + 1)
+    aranged = np.arange(-size, size + 1)
     for i in aranged:
-        top=top+[(-size,i)]
-        bottom=bottom+[(size,i)]
-        right=right+[(i,size)]
+        top = top + [(-size, i)]
+        bottom = bottom + [(size, i)]
+        right = right + [(i, size)]
         left = left + [(i, -size)]
     bottom.reverse()
     left.reverse()
-    square=top+right[1:]+bottom[1:]+left[1:-1]
+    square = top + right[1:] + bottom[1:] + left[1:-1]
 
     return square
+
 
 def triangulate_point(lpoint, rpoint, left_cm, right_cm):
     """
     Uses triangulation to generate the global 3D coordinates using two 2D (x,y) pixel coordinates.
+
+
 
     :param lpoint: The pixels of the left image
     :param rpoint: The pixels of the right image
@@ -260,6 +281,7 @@ def triangulate_point(lpoint, rpoint, left_cm, right_cm):
     :param right_cm: The camera matrix for the right camera
     :return: 3D point in global coordinates
     """
+
     M = np.zeros((6, 5))
     for row in range(0, 3):
         M[row, 2:] = left_cm[row, :3]
