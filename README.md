@@ -23,7 +23,7 @@ Download the project using:
 ```
 git clone https://github.com/bobejo/thesis_project.git
 ```
-Make sure to change to path of your images in the file **computer_vision/paths.py**
+Make sure to change to path of your images, models and camera matrices in the file **computer_vision/paths.py**
 
 
 ## Authors
