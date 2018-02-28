@@ -1,6 +1,6 @@
-# Project Title
+# Dynamic bin picking of complex details and placing
 
-One Paragraph of project description goes here
+This code contains the computer vision and ROS used for the project
 
 ## Getting Started
 
@@ -55,5 +55,5 @@ Give an example
 ## Authors
 
 * **Mahomoud Hanafy** - hanafy@student.chalmers.se
-* **Samuel Ingemarsson** - samuel.ingemarsson@<gmail class="com"></gmail>	
+* **Samuel Ingemarsson** - samuel.ingemarsson@gmail.com	
 
