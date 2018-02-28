@@ -10,12 +10,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 
 * Python
-* Numpy
-* Scipy
+* Numpy & SciPy
 * Matplotlib
 * Tensorflow
 * Keras
-
+* ROS Indigo
 
 ### Installing
 
@@ -29,21 +28,6 @@ git clone https://github.com/bobejo/thesis_project.git
 
 Explain how to run the automated tests for this system
 
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
 
 ## Authors
 
