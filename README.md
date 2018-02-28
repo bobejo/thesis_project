@@ -23,10 +23,7 @@ Download the project using:
 ```
 git clone https://github.com/bobejo/thesis_project.git
 ```
-
-## Running the tests
-
-Explain how to run the automated tests for this system
+Make sure to change to path of your images in the file **paths.py**
 
 
 ## Authors
