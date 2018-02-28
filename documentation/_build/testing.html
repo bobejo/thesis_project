@@ -1,0 +1,137 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>testing &#8212; master  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="snap_pic" href="snap_pic.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-testing">
+<span id="testing"></span><h1>testing<a class="headerlink" href="#module-testing" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="testing.test_affine">
+<code class="descclassname">testing.</code><code class="descname">test_affine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#testing.test_affine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds similarities between the two images and uses this to find the affine transformation between the images.
+Plots the true coordinate in the left image and the transformed in the right image.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="testing.test_blobdetection">
+<code class="descclassname">testing.</code><code class="descname">test_blobdetection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#testing.test_blobdetection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test the blob detection for several images</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="testing.test_contact_points">
+<code class="descclassname">testing.</code><code class="descname">test_contact_points</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#testing.test_contact_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the found blobs to find the two contact points of the image.
+Plots the dilated image together with the contact points</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="testing.test_contour">
+<code class="descclassname">testing.</code><code class="descname">test_contour</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#testing.test_contour" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contour test</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="testing.test_generation">
+<code class="descclassname">testing.</code><code class="descname">test_generation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#testing.test_generation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a generator and plots the output.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="testing.test_prediction">
+<code class="descclassname">testing.</code><code class="descname">test_prediction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#testing.test_prediction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the input, target and prediction images.
+Runs get_prediction() to get the prediction.</p>
+<p>Press ANY button to change images.
+ESC to exit</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="testing.test_triangulation">
+<code class="descclassname">testing.</code><code class="descname">test_triangulation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#testing.test_triangulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Triangulates using the affine transformation.
+Print the global coordinates</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="snap_pic.html" title="previous chapter">snap_pic</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/testing.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
