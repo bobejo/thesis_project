@@ -2,11 +2,12 @@
 '''
 Based on https://github.com/opencv/opencv/blob/master/samples/python/mouse_and_match.py
 
- Read in the images in a directory one by one
- Allow the user to select two points and then draw a line between them.
- When done with the current image press SPACE to show next image.
- When pressing SPACE it saves the annotation image as jpg in the save path and also moves the previous image to a
- subfolder in the image path where the images which have been annotated are stored.
+Read in the images in a directory one by one
+Allow the user to select two points and then draw a line between them.
+
+When done with the current image press SPACE to show next image. When pressing SPACE it saves the annotation image as
+a jpg in the save path and also moves the previous image to a subfolder in the image path where the images which have
+been annotated are stored.
 
  SPACE for next image
  ESC to exit
@@ -27,12 +28,9 @@ drag_start = None
 sel = (0, 0, 0, 0)
 nr_clicked = 0
 drag_end = None
-# Linux
-save_path = '/home/saming/PycharmProjects/thesis_project/computer_vision/images/training_data/'
-image_path = '/home/saming/PycharmProjects/thesis_project/computer_vision/images/cropped_images'
-#Windows
-#save_path='C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\computer_vision\\images\\training_data'
-#image_path='C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\computer_vision\\images\\cropped_images'
+
+save_path='C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\computer_vision\\images\\training_data'
+image_path='C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\computer_vision\\images\\cropped_images\\*'
 move_path= '/home/saming/thesis_project/computer_vision/images/cropped_images/Annotated/'
 drags = []
 i=1
@@ -50,7 +48,7 @@ def onmouse(event, x, y, flags, param):
 
     elif drag_start and drag_end:
         if flags & cv.EVENT_FLAG_LBUTTON:
-            cv.line(img, drag_start, drag_end, (0, 255, 255), 2)
+            cv.line(img, drag_start, drag_end, (0, 255, 255), 5)
             cv.imshow("Annotation", img)
 
         else:
@@ -74,7 +72,9 @@ if __name__ == '__main__':
     cv.namedWindow("Annotation", 1)
     cv.setMouseCallback("Annotation", onmouse)
     '''Loop through all the images in the directory'''
+    print(path)
     allfiles=glob.glob(path)
+    print(len(allfiles))
     for infile in allfiles:
 
         ext = os.path.splitext(infile)[1][1:]  # get the filename extension
@@ -92,7 +92,7 @@ if __name__ == '__main__':
             blank_image[:, :] = (100, 0, 0)
             for d in drags:
                 cv.line(blank_image, d[0], d[1], (255, 255, 255), 10)
-                #cv.circle(blank_image, (d[0]), 10, (255, 255, 255), -1)
+
 
             oldimg = infile.split('cropped_images/')
             print(i)
