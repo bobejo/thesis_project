@@ -213,4 +213,4 @@ def test_contact_points():
 #test_contour()
 #test_contact_points()
 #test_blobdetection()
-test_prediction()
+#test_prediction()
