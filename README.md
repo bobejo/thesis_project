@@ -8,34 +8,22 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
 
-```
 * Python
 * Numpy
 * Scipy
 * Matplotlib
 * Tensorflow
 * Keras
-```
+
 
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
+Download the project using:
 
 ```
-Download the project using "git clone https://github.com/bobejo/thesis_project.git"
+git clone https://github.com/bobejo/thesis_project.git
 ```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Running the tests
 
