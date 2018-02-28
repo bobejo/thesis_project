@@ -5,18 +5,17 @@ import paths
 import img_numpy
 import grasp_finder as gf
 from matplotlib import pyplot as plt
-#from grasp_finder import featurematching_coordinates, least_square_solver, affine_transformation, triangulate_point, contour_detector
-#from grasp_finder import binary_image, dilate_image, image_segmentation, blob_detector, find_contact_points, create_square
 from keras.models import load_model
 from Loss import LogLoss, accuracy
 
+"""
+Contains test for several functions
+"""
 
 def test_triangulation():
     """
     Triangulates using the affine transformation.
     Print the global coordinates
-
-    :return:
     """
 
     # The path for images taken with both cameras at the same time
@@ -59,8 +58,6 @@ def test_affine():
     """
     Finds similarities between the two images and uses this to find the affine transformation between the images.
     Plots the true coordinate in the left image and the transformed in the right image.
-
-    :return:
     """
     # The path for images taken with both cameras at the same time
     test_path_right = paths.test_path_right
@@ -97,9 +94,6 @@ def test_affine():
 def test_contour():
     """
     Contour test
-
-
-    :return:
     """
 
     model = load_model(paths.model_path, custom_objects={'LogRegLoss': LogLoss()})
@@ -129,7 +123,6 @@ def test_blobdetection():
     """
     Test the blob detection for several images
 
-    :return:
     """
 
     model = load_model(paths.model_path, custom_objects={'LogRegLoss': LogLoss()})
@@ -162,8 +155,6 @@ def test_blobdetection():
 def test_generation():
     """
     Creates a generator and plots the output.
-
-    :return:
     """
     x_test_path = paths.x_test_path
     y_test_path = paths.y_test_path
@@ -183,8 +174,6 @@ def test_contact_points():
     """
     Uses the found blobs to find the two contact points of the image.
     Plots the dilated image together with the contact points
-
-    :return:
     """
 
     model = load_model(paths.model_path, custom_objects={'LogRegLoss': LogLoss()})
