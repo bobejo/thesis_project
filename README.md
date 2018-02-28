@@ -54,6 +54,6 @@ Give an example
 
 ## Authors
 
-* **Mahomoud Hanafy** - hanafy@student.chalmers.se
+* **Mahmoud Hanafy** - hanafy@student.chalmers.se
 * **Samuel Ingemarsson** - samuel.ingemarsson@gmail.com	
 
