@@ -100,7 +100,7 @@ def test_contour():
     """
     Contour test
     """
-
+    # TODO Fix detector
     model = load_model(paths.model_path, custom_objects={'LogRegLoss': LogLoss()})
     x_test_path = paths.x_test_path
     y_test_path = paths.y_test_path

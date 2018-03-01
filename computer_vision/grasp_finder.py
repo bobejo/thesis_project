@@ -4,7 +4,7 @@ from keras.models import load_model
 import cnn
 from img_numpy import imgs2numpy
 from Loss import LogLoss, accuracy
-# from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt
 from scipy import ndimage
 import operator
 
@@ -16,6 +16,8 @@ def contour_detector(img):
     :param img: Dilated image
     :return: The contour of the image
     """
+    # TODO. Fix settings
+
     cv2.imshow('img', img)
     im2, contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     cv2.drawContours(im2, contours, -1, (0, 255, 0), 3)
@@ -32,6 +34,7 @@ def blob_detector(img):
     :param img: Binary dilated image
     :return: The keypoints for the blobs
     """
+    # TODO Fix settings
     # Settings for blobdetector
     params = cv2.SimpleBlobDetector_Params()
     params.filterByCircularity = False
