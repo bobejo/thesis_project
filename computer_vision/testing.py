@@ -6,7 +6,7 @@ import img_numpy
 import image_registration as tf
 import grasp_finder as gf
 import image_segmentation as iseg
-#from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt
 from keras.models import load_model
 from Loss import LogLoss, accuracy
 
