@@ -8,13 +8,8 @@ Welcome to master's documentation!
    :name: mastertoc
    :maxdepth: 2
 
-   annotation
-   cnn
-   crop_images
-   grasp_finder
-   img_numpy
-   snap_pic
-   testing
+   ROS
+   computer_vision
 
 
 
