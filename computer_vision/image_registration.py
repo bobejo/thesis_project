@@ -109,7 +109,7 @@ def ransac_inliers(lpoints, rpoints, threshold):
 
     unique_lpoints = []
     for tup in new_lpoints:
-        for i in range(0,3):
+        for i in range(0, 3):
             if tup[i] not in unique_lpoints:
                 unique_lpoints.append(tup[i])
 
@@ -123,7 +123,7 @@ def ransac_inliers(lpoints, rpoints, threshold):
     return unique_lpoints, unique_rpoints
 
 
-def least_square_solver(lpoints, rpoints,threshold):
+def least_square_solver(lpoints, rpoints, threshold):
     """
     Uses the least square method the estimate the transformation matrix and translation vector.
     First removes outliers using ransac_inliers
@@ -133,9 +133,7 @@ def least_square_solver(lpoints, rpoints,threshold):
     :param threshold: The treshold used for removing outliers in RANSAC
     :return: Transformation matrix A and translation vector t
     """
-    lpoints, rpoints=ransac_inliers(lpoints, rpoints, threshold)
-
-
+    lpoints, rpoints = ransac_inliers(lpoints, rpoints, threshold)
 
     N = len(lpoints)
     M = np.array([[lpoints[0][0], lpoints[0][1], 1, 0, 0, 0], [0, 0, 0, lpoints[0][0], lpoints[0][1], 1]])

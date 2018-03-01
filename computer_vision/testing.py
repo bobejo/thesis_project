@@ -73,7 +73,7 @@ def test_transformation():
     test_path_left = paths.test_path_left
 
     [lpt, rpt] = gf.featurematching_coordinates(test_path_left, test_path_right, 30)
-    A, t = tf.least_square_solver(lpt, rpt,20)
+    A, t = tf.least_square_solver(lpt, rpt, 20)
 
     for i in range(0, len(lpt)):
         img1 = cv2.imread(test_path_left, 0)
@@ -91,8 +91,8 @@ def test_transformation():
         right_points = int(rpt[i][0]), int(rpt[i][1])
         cv2.circle(img1, left_points, 3, (255, 0, 0), 5)
         cv2.circle(img2, right_points, 3, (0, 0, 0), 5)
-        cv2.imshow('left',img1)
-        cv2.imshow('right',img2)
+        cv2.imshow('left', img1)
+        cv2.imshow('right', img2)
         cv2.waitKey(0)
 
 
