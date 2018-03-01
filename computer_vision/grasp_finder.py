@@ -63,7 +63,7 @@ def featurematching_coordinates(limg, rimg, threshold=10):
     :param limg:   The image from the left camera
     :param rimg:   The image from the right camera
     :param threshold: The maximum distance between descriptors
-    :return: (left_coordinates, right_coordinates): The coordinates for each match for the images
+    :return: (lpoints, rpoints): The coordinates for each match in left image and right image
     """
 
     img1 = cv2.imread(limg, 0)
@@ -83,10 +83,10 @@ def featurematching_coordinates(limg, rimg, threshold=10):
 
     good = sorted(good, key=lambda x: x[0].distance)
 
-    left_coord = [kp1[mat[0].queryIdx].pt for mat in good]
-    right_coord = [kp2[mat[0].trainIdx].pt for mat in good]
+    lpoints = [kp1[mat[0].queryIdx].pt for mat in good]
+    rpoints = [kp2[mat[0].trainIdx].pt for mat in good]
 
-    return left_coord, right_coord
+    return lpoints, rpoints
 
 
 def find_contact_points(img, center):
@@ -157,8 +157,6 @@ def create_square(size):
 def triangulate_point(lpoint, rpoint, left_cm, right_cm):
     """
     Uses triangulation to generate the global 3D coordinates using two 2D (x,y) pixel coordinates.
-
-
 
     :param lpoint: The pixels of the left image
     :param rpoint: The pixels of the right image

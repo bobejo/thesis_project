@@ -3,6 +3,7 @@ import cv2
 import cnn
 import paths
 import img_numpy
+import transformation as tf
 import grasp_finder as gf
 import image_segmentation as iseg
 from matplotlib import pyplot as plt
@@ -61,25 +62,25 @@ def test_prediction():
         cv2.waitKey(0)
 
 
-def test_affine():
+def test_transformation():
     """
-    Finds similarities between the two images and uses this to find the affine transformation between the images.
+    Finds similarities between the two images. Uses RANSAC to remove outliers. Least square solver is used for the
+    inliers to estimate the transformation.
     Plots the true coordinate in the left image and the transformed in the right image.
     """
     # The path for images taken with both cameras at the same time
     test_path_right = paths.test_path_right
     test_path_left = paths.test_path_left
 
-    [lpt, rpt] = gf.featurematching_coordinates(test_path_left, test_path_right, 31)
-    A, t = gf.affine_transformation_solver(lpt, rpt)
-    # A, t = gf.least_square_solver(lpt, rpt)
+    [lpt, rpt] = gf.featurematching_coordinates(test_path_left, test_path_right, 30)
+    A, t = tf.least_square_solver(lpt, rpt,20)
 
-    for i in range(0, 15):
+    for i in range(0, len(lpt)):
         img1 = cv2.imread(test_path_left, 0)
         img2 = cv2.imread(test_path_right, 0)
 
         left_points = lpt[i]
-        right_points = gf.affine_transformation(A, t, left_points)
+        right_points = tf.affine_transformation(A, t, left_points)
         print('==========================')
         print('True left points ' + str(lpt[i]))
         print('True right points ' + str(rpt[i]))
@@ -90,12 +91,9 @@ def test_affine():
         right_points = int(rpt[i][0]), int(rpt[i][1])
         cv2.circle(img1, left_points, 3, (255, 0, 0), 5)
         cv2.circle(img2, right_points, 3, (0, 0, 0), 5)
-        fig1, axs1 = plt.subplots(1, 2, figsize=(20, 20))
-
-        axs1[0].imshow(img1, cmap='gray')
-        axs1[1].imshow(img2, cmap='gray')
-        plt.tight_layout()
-        plt.show()
+        cv2.imshow('left',img1)
+        cv2.imshow('right',img2)
+        cv2.waitKey(0)
 
 
 def test_contour():
@@ -164,6 +162,7 @@ def test_generation():
     """
     Creates a generator and plots the output.
     """
+
     x_test_path = paths.x_test_path
     y_test_path = paths.y_test_path
     test_generator = cnn.create_generators(x_test_path, y_test_path, batch_size, row_size, col_size)
@@ -188,7 +187,7 @@ def test_contact_points():
     y_test_path = paths.y_test_path
 
     test_generator = cnn.create_generators(x_test_path, y_test_path, 1)
-    for i in range(0, 10):
+    for i in range(0, 25):
         (inp, target) = next(test_generator)
         p = cnn.get_prediction(model, inp)
         bi = iseg.binary_image(p[0], 0.2)
@@ -202,8 +201,9 @@ def test_contact_points():
         cv2.imshow('Contact points', di)
         cv2.waitKey(0)
 
+
 # test_generation()
-# test_affine()
+test_transformation()
 # test_contour()
 # test_contact_points()
 # test_blobdetection()
