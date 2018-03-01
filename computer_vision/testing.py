@@ -13,9 +13,9 @@ from Loss import LogLoss, accuracy
 Contains test for several functions
 '''
 
-batch_size=1
-row_size=500
-col_size=400
+batch_size = 1
+row_size = 500
+col_size = 400
 
 
 def test_triangulation():
@@ -39,6 +39,7 @@ def test_triangulation():
         print('Y ' + str(tri[1][0]))
         print('Z ' + str(tri[2][0]))
 
+
 def test_prediction():
     """
     Plots the input, target and prediction images.
@@ -47,7 +48,7 @@ def test_prediction():
     Press ANY button to change images.
     ESC to exit
     """
-    x_test_path=paths.x_test_path+'\\inp\\*.jpg'
+    x_test_path = paths.x_test_path + '\\inp\\*.jpg'
     y_test_path = paths.y_test_path + '\\inp\\*.jpg'
     model = load_model(paths.model_path, custom_objects={'LogRegLoss': LogLoss()})
     x_test = img_numpy.imgs2numpy(x_test_path, 100)
@@ -70,8 +71,8 @@ def test_affine():
     test_path_left = paths.test_path_left
 
     [lpt, rpt] = gf.featurematching_coordinates(test_path_left, test_path_right, 31)
-    A,t=gf.affine_transformation_solver(lpt, rpt)
-    #A, t = gf.least_square_solver(lpt, rpt)
+    A, t = gf.affine_transformation_solver(lpt, rpt)
+    # A, t = gf.least_square_solver(lpt, rpt)
 
     for i in range(0, 15):
         img1 = cv2.imread(test_path_left, 0)
@@ -143,7 +144,8 @@ def test_blobdetection():
         bi = iseg.binary_image(p[0], 0.2)
         di = iseg.dilate_image(bi, 5)
         k = gf.blob_detector(di)
-        im_with_keypoints = cv2.drawKeypoints(di, k, np.array([]), (0, 0, 255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        im_with_keypoints = cv2.drawKeypoints(di, k, np.array([]), (0, 0, 255),
+                                              cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
         fig3, axs3 = plt.subplots(2, 2, figsize=(30, 30))
 
@@ -164,14 +166,13 @@ def test_generation():
     """
     x_test_path = paths.x_test_path
     y_test_path = paths.y_test_path
-    test_generator = cnn.create_generators(x_test_path, y_test_path, batch_size,row_size,col_size)
+    test_generator = cnn.create_generators(x_test_path, y_test_path, batch_size, row_size, col_size)
 
-
-    for i in range(0,10):
+    for i in range(0, 10):
         fig, axs = plt.subplots(1, 2, figsize=(20, 20))
         (inp, target) = next(test_generator)
         axs[0].imshow(inp[0])
-        axs[1].imshow(target[0].reshape(550,400), cmap='gray')
+        axs[1].imshow(target[0].reshape(550, 400), cmap='gray')
         plt.tight_layout()
         plt.show()
 
@@ -187,7 +188,7 @@ def test_contact_points():
     y_test_path = paths.y_test_path
 
     test_generator = cnn.create_generators(x_test_path, y_test_path, 1)
-    for i in range(0,10):
+    for i in range(0, 10):
         (inp, target) = next(test_generator)
         p = cnn.get_prediction(model, inp)
         bi = iseg.binary_image(p[0], 0.2)
@@ -201,11 +202,9 @@ def test_contact_points():
         cv2.imshow('Contact points', di)
         cv2.waitKey(0)
 
-
-
-#test_generation()
-#test_affine()
-#test_contour()
-#test_contact_points()
-#test_blobdetection()
-#test_prediction()
+# test_generation()
+# test_affine()
+# test_contour()
+# test_contact_points()
+# test_blobdetection()
+# test_prediction()

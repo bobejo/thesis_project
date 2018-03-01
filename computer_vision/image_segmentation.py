@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def binary_image(img, threshold):
     """
     Set all parameters below the threshold to 0 and all above to 1
@@ -41,4 +42,3 @@ def image_segmentation(img, threshold, size):
     di = dilate_image(bi, size)
     dim = di.astype(np.uint8)
     return dim
-

@@ -4,10 +4,9 @@ from keras.models import load_model
 import cnn
 from img_numpy import imgs2numpy
 from Loss import LogLoss, accuracy
-#from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 from scipy import ndimage
 import operator
-
 
 
 def contour_detector(img):
