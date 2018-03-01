@@ -4,52 +4,10 @@ from keras.models import load_model
 import cnn
 from img_numpy import imgs2numpy
 from Loss import LogLoss, accuracy
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 from scipy import ndimage
 import operator
-from scipy.linalg import solve
 
-
-def binary_image(img, threshold):
-    """
-    Set all parameters below the threshold to 0 and all above to 1
-
-    :param img: The image
-    :param threshold: The threshold
-    :return: An binary image where each pixel is either 1 or 0
-    """
-    r, bi = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY)
-    return bi
-
-
-def dilate_image(img, size):
-    """
-    Dilates the binary image, making the lines thicker and more connected
-
-    :param img: Binary image
-    :param size: Size of the dilation
-    :return: Dilated binary image
-    """
-    kernel = np.ones((size, size))
-    di = cv2.dilate(img, kernel, iterations=1)
-    dilated_img = di.astype(np.uint8)
-    return dilated_img
-
-
-def image_segmentation(img, threshold, size):
-    """
-    Does image segmentation on the input image. First converts to binary image then dilates it
-
-    :param img: The output from prediction
-    :param threshold: The threshold for choosing 1 and 0
-    :param size: The size of the dilation
-    :return: A binary dilated image of type uint8 (wanted by blobdetector)
-    """
-
-    bi = binary_image(img[0], threshold)
-    di = dilate_image(bi, size)
-    dim = di.astype(np.uint8)
-    return dim
 
 
 def contour_detector(img):
@@ -64,7 +22,6 @@ def contour_detector(img):
     cv2.drawContours(im2, contours, -1, (0, 255, 0), 3)
     cv2.imshow('im2', im2)
     # cv2.imshow('cont',contours)
-    print(dir(contours[0]))
     cv2.waitKey(0)
     return im2
 
@@ -99,74 +56,6 @@ def blob_detector(img):
     return k
 
 
-def affine_transformation(A, t, lpoints):
-    """
-    Calculates the coordinates of the right image using affine transformation
-    rpoints=A*lpoints+t
-
-    :param A: Transformation matrix (2x2)
-    :param t: Translation vector
-    :param lpoints: Points from left image
-    :return: The corresponding points in the right image
-    """
-
-    mul = np.matmul(A.reshape(2, 2), lpoints)
-    rpoints = np.add(mul.reshape(2, 1), t)
-    return (rpoints[0], rpoints[1])
-
-
-def least_square_solver(lpoints, rpoints):
-    """
-    Uses the least square method the estimate the transformation matrix and translation vector
-
-    :param lpoints: List of coordinates (x,y), of at least length 3, for left camera
-    :param rpoints: List of coordinates (x,y), of at least length 3, for right camera
-    :return: Transformation matrix A and translation vector t
-    """
-    N = len(lpoints)
-    M = np.array([[lpoints[0][0], lpoints[0][1], 1, 0, 0, 0], [0, 0, 0, lpoints[0][0], lpoints[0][1], 1]])
-    v = np.array([[rpoints[0][0]], [rpoints[0][1]]])
-
-    for i in range(1, N):
-        M_row = np.array([[lpoints[i][0], lpoints[i][1], 1, 0, 0, 0], [0, 0, 0, lpoints[i][0], lpoints[i][1], 1]])
-        v_row = np.array([[rpoints[i][0]], [rpoints[i][1]]])
-        M = np.vstack((M, M_row))
-        v = np.vstack((v, v_row))
-
-    theta, r, ra, s = np.linalg.lstsq(M, v)
-    print(theta)
-    A = np.array([[theta[0], theta[1]], [theta[3], theta[4]]])
-    t = np.array([theta[2], theta[5]])
-    return A, t
-
-
-def affine_transformation_solver(lpoints, rpoints):
-    """
-    Calculates the transformation matrix and translation vector with 3 coordinates.
-    theta=M\v
-
-    :param lpoints:  List of coordinates (x,y), of at least length 3, for left camera
-    :param rpoints: List of coordinates (x,y), of at least length 3, for right camera
-    :return: Transformation matrix A and translation vector t
-    """
-    M = np.matrix([[lpoints[0][0], lpoints[0][1], 0, 0, 1, 0],
-                   [0, 0, lpoints[0][0], lpoints[0][1], 0, 1],
-                   [lpoints[1][0], lpoints[1][1], 0, 0, 1, 0],
-                   [0, 0, lpoints[1][0], lpoints[1][1], 0, 1],
-                   [lpoints[2][0], lpoints[2][1], 0, 0, 1, 0],
-                   [0, 0, lpoints[2][0], lpoints[2][1], 0, 1]]
-                  )
-
-    v = np.matrix(
-        [[rpoints[0][0]], [rpoints[0][1]], [rpoints[1][0]], [rpoints[1][1]], [rpoints[7][0]],
-         [rpoints[7][1]]])
-    theta = solve(M, v)
-    A = np.array([theta[0], theta[1], theta[2], theta[3]])
-    A = A.reshape(2, 2)
-    t = np.array([theta[4], theta[5]])
-    return A, t
-
-
 def featurematching_coordinates(limg, rimg, threshold=10):
     """
     Extracts features from each image prediction and matches them with each other to find similarities.
@@ -175,7 +64,7 @@ def featurematching_coordinates(limg, rimg, threshold=10):
     :param limg:   The image from the left camera
     :param rimg:   The image from the right camera
     :param threshold: The maximum distance between descriptors
-    :return: (left_coordinates, right_coordinates): The coordinates for the each match for the images
+    :return: (left_coordinates, right_coordinates): The coordinates for each match for the images
     """
 
     img1 = cv2.imread(limg, 0)
@@ -243,11 +132,8 @@ def create_square(size):
     Creates a square of coordinates around (0,0) used for find_contact_points
 
     example of size 1
-    [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1)]
 
-    (-1, -1) (-1, 0)  (-1, 1)
-    (0, -1)  (0, 0)   (0, 1)
-    (1, -1)  (1, 0)   (1, 1)
+    [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1)]
 
     :param size: The length from the center (0,0)
     :return: List of coordinates starting at (-size,-size)

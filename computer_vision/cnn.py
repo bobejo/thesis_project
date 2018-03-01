@@ -20,7 +20,7 @@ K.set_image_dim_ordering('tf')
 img_rows, img_cols = 550, 400
 
 
-def create_generators(input_path, target_path, batch_size):
+def create_generators(input_path, target_path, batch_size, row_size, col_size):
     """
     Creates a two generator with the training data (input images and target images) and returns a zipped generator.
     The generator first rescales the input and target images and then randomly flips and shifts them in the same way.
@@ -28,9 +28,11 @@ def create_generators(input_path, target_path, batch_size):
     :param input_path:  The path of the input images that will be used.
     :param target_path: The path of the target images that wil be used.
     :param batch_size: The number of images generated per batch.
+    :param row_size: The wanted row size of the generated image
+    :param col_size: The wanted column size of the generated image
     :return: Tuple with the two zipped generators
     """
-    #
+
     # The arguments
     data_gen_args = dict(rescale=1. / 255, horizontal_flip=True, vertical_flip=True, width_shift_range=0.03,
                          height_shift_range=0.03)
@@ -45,14 +47,14 @@ def create_generators(input_path, target_path, batch_size):
         input_path,
         class_mode=None,
         batch_size=batch_size,
-        target_size=(img_rows, img_cols),
+        target_size=(row_size, col_size),
         seed=seed)
 
     target_generator = target_datagen.flow_from_directory(
         target_path,
         class_mode=None,
         batch_size=batch_size,
-        target_size=(img_rows, img_cols),
+        target_size=(row_size, col_size),
         color_mode='grayscale',
         seed=seed)
 

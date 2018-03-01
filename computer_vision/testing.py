@@ -4,13 +4,19 @@ import cnn
 import paths
 import img_numpy
 import grasp_finder as gf
+import image_segmentation as iseg
 from matplotlib import pyplot as plt
 from keras.models import load_model
 from Loss import LogLoss, accuracy
 
-"""
+'''
 Contains test for several functions
-"""
+'''
+
+batch_size=1
+row_size=500
+col_size=400
+
 
 def test_triangulation():
     """
@@ -74,8 +80,8 @@ def test_affine():
         left_points = lpt[i]
         right_points = gf.affine_transformation(A, t, left_points)
         print('==========================')
-        print('True left ' + str(lpt[i]))
-        print('True right' + str(rpt[i]))
+        print('True left points ' + str(lpt[i]))
+        print('True right points ' + str(rpt[i]))
         print('Estimated right points ' + str(right_points))
         print('==========================')
 
@@ -105,8 +111,8 @@ def test_contour():
         (inp, target) = next(test_generator)
 
         p = cnn.get_prediction(model, inp)
-        bi = gf.binary_image(p[0], 0.2)
-        di = gf.dilate_image(bi, 5)
+        bi = iseg.binary_image(p[0], 0.2)
+        di = iseg.dilate_image(bi, 5)
         cont = gf.contour_detector(di)
 
         fig3, axs3 = plt.subplots(2, 2, figsize=(30, 30))
@@ -134,8 +140,8 @@ def test_blobdetection():
         (inp, target) = next(test_generator)
 
         p = cnn.get_prediction(model, inp)
-        bi = gf.binary_image(p[0], 0.2)
-        di = gf.dilate_image(bi, 5)
+        bi = iseg.binary_image(p[0], 0.2)
+        di = iseg.dilate_image(bi, 5)
         k = gf.blob_detector(di)
         im_with_keypoints = cv2.drawKeypoints(di, k, np.array([]), (0, 0, 255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
@@ -158,7 +164,7 @@ def test_generation():
     """
     x_test_path = paths.x_test_path
     y_test_path = paths.y_test_path
-    test_generator = cnn.create_generators(x_test_path, y_test_path, 1)
+    test_generator = cnn.create_generators(x_test_path, y_test_path, batch_size,row_size,col_size)
 
 
     for i in range(0,10):
@@ -184,8 +190,8 @@ def test_contact_points():
     for i in range(0,10):
         (inp, target) = next(test_generator)
         p = cnn.get_prediction(model, inp)
-        bi = gf.binary_image(p[0], 0.2)
-        di = gf.dilate_image(bi, 5)
+        bi = iseg.binary_image(p[0], 0.2)
+        di = iseg.dilate_image(bi, 5)
         k = gf.blob_detector(di)
 
         pt = (int(k[-1].pt[0]), int(k[-1].pt[1]))

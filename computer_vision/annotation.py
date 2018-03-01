@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''
+"""
 Based on https://github.com/opencv/opencv/blob/master/samples/python/mouse_and_match.py
 
 Read in the images in a directory one by one
@@ -11,7 +11,7 @@ been annotated are stored.
 
  SPACE for next image
  ESC to exit
-'''
+"""
 
 # Python 2/3 compatibility
 from __future__ import print_function
