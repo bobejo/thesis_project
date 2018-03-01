@@ -1,6 +1,6 @@
 .. master documentation master file, created Thu Feb  8 15:07:47 2018.
 
-Welcome to master's documentation!
+Welcome to dynamic bin picking of complex details and placing documentation!
 ==================================
 
 .. toctree::

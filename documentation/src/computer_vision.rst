@@ -10,6 +10,8 @@ Documentation for computer vision!
    cnn
    crop_images
    grasp_finder
+   image_registration
+   image_segmentation
    img_numpy
    snap_pic
    testing

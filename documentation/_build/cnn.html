@@ -42,7 +42,8 @@
         <li class="right" >
           <a href="annotation.html" title="annotation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="computer_vision.html" accesskey="U">Documentation for computer vision!</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -55,7 +56,7 @@
 <span id="cnn"></span><h1>cnn<a class="headerlink" href="#module-cnn" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="cnn.create_generators">
-<code class="descclassname">cnn.</code><code class="descname">create_generators</code><span class="sig-paren">(</span><em>input_path</em>, <em>target_path</em>, <em>batch_size</em><span class="sig-paren">)</span><a class="headerlink" href="#cnn.create_generators" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">cnn.</code><code class="descname">create_generators</code><span class="sig-paren">(</span><em>input_path</em>, <em>target_path</em>, <em>batch_size</em>, <em>row_size</em>, <em>col_size</em><span class="sig-paren">)</span><a class="headerlink" href="#cnn.create_generators" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a two generator with the training data (input images and target images) and returns a zipped generator.
 The generator first rescales the input and target images and then randomly flips and shifts them in the same way.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -66,6 +67,8 @@ The generator first rescales the input and target images and then randomly flips
 <li><strong>input_path</strong> – The path of the input images that will be used.</li>
 <li><strong>target_path</strong> – The path of the target images that wil be used.</li>
 <li><strong>batch_size</strong> – The number of images generated per batch.</li>
+<li><strong>row_size</strong> – The wanted row size of the generated image</li>
+<li><strong>col_size</strong> – The wanted column size of the generated image</li>
 </ul>
 </td>
 </tr>
@@ -179,7 +182,8 @@ Trains the model with the training data and saves it when done.</p>
         <li class="right" >
           <a href="annotation.html" title="annotation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="computer_vision.html" >Documentation for computer vision!</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

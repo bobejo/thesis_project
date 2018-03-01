@@ -3,10 +3,10 @@ import cv2
 import cnn
 import paths
 import img_numpy
-import transformation as tf
+import image_registration as tf
 import grasp_finder as gf
 import image_segmentation as iseg
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 from keras.models import load_model
 from Loss import LogLoss, accuracy
 
@@ -203,7 +203,7 @@ def test_contact_points():
 
 
 # test_generation()
-test_transformation()
+#test_transformation()
 # test_contour()
 # test_contact_points()
 # test_blobdetection()

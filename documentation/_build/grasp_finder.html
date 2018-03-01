@@ -42,7 +42,8 @@
         <li class="right" >
           <a href="crop_images.html" title="crop_images"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="computer_vision.html" accesskey="U">Documentation for computer vision!</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -53,72 +54,6 @@
             
   <div class="section" id="module-grasp_finder">
 <span id="grasp-finder"></span><h1>grasp_finder<a class="headerlink" href="#module-grasp_finder" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="grasp_finder.affine_transformation">
-<code class="descclassname">grasp_finder.</code><code class="descname">affine_transformation</code><span class="sig-paren">(</span><em>A</em>, <em>t</em>, <em>lpoints</em><span class="sig-paren">)</span><a class="headerlink" href="#grasp_finder.affine_transformation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the coordinates of the right image using affine transformation
-rpoints=A*lpoints+t</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>A</strong> – Transformation matrix (2x2)</li>
-<li><strong>t</strong> – Translation vector</li>
-<li><strong>lpoints</strong> – Points from left image</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The corresponding points in the right image</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="grasp_finder.affine_transformation_solver">
-<code class="descclassname">grasp_finder.</code><code class="descname">affine_transformation_solver</code><span class="sig-paren">(</span><em>lpoints</em>, <em>rpoints</em><span class="sig-paren">)</span><a class="headerlink" href="#grasp_finder.affine_transformation_solver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the transformation matrix and translation vector with 3 coordinates.
-theta=M</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>lpoints</strong> – List of coordinates (x,y), of at least length 3, for left camera</li>
-<li><strong>rpoints</strong> – List of coordinates (x,y), of at least length 3, for right camera</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Transformation matrix A and translation vector t</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="grasp_finder.binary_image">
-<code class="descclassname">grasp_finder.</code><code class="descname">binary_image</code><span class="sig-paren">(</span><em>img</em>, <em>threshold</em><span class="sig-paren">)</span><a class="headerlink" href="#grasp_finder.binary_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set all parameters below the threshold to 0 and all above to 1</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>img</strong> – The image</li>
-<li><strong>threshold</strong> – The threshold</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An binary image where each pixel is either 1 or 0</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="function">
 <dt id="grasp_finder.blob_detector">
 <code class="descclassname">grasp_finder.</code><code class="descname">blob_detector</code><span class="sig-paren">(</span><em>img</em><span class="sig-paren">)</span><a class="headerlink" href="#grasp_finder.blob_detector" title="Permalink to this definition">¶</a></dt>
@@ -170,27 +105,6 @@ theta=M</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="grasp_finder.dilate_image">
-<code class="descclassname">grasp_finder.</code><code class="descname">dilate_image</code><span class="sig-paren">(</span><em>img</em>, <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#grasp_finder.dilate_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dilates the binary image, making the lines thicker and more connected</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>img</strong> – Binary image</li>
-<li><strong>size</strong> – Size of the dilation</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Dilated binary image</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="grasp_finder.featurematching_coordinates">
 <code class="descclassname">grasp_finder.</code><code class="descname">featurematching_coordinates</code><span class="sig-paren">(</span><em>limg</em>, <em>rimg</em>, <em>threshold=10</em><span class="sig-paren">)</span><a class="headerlink" href="#grasp_finder.featurematching_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts features from each image prediction and matches them with each other to find similarities.
@@ -206,7 +120,7 @@ Sorts the matches and returns all coordinates off all matches</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(left_coordinates, right_coordinates): The coordinates for each match for the images</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(lpoints, rpoints): The coordinates for each match in left image and right image</p>
 </td>
 </tr>
 </tbody>
@@ -229,49 +143,6 @@ If one point is found it stops looking at that side.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The two contacts points</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="grasp_finder.image_segmentation">
-<code class="descclassname">grasp_finder.</code><code class="descname">image_segmentation</code><span class="sig-paren">(</span><em>img</em>, <em>threshold</em>, <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#grasp_finder.image_segmentation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Does image segmentation on the input image. First converts to binary image then dilates it</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>img</strong> – The output from prediction</li>
-<li><strong>threshold</strong> – The threshold for choosing 1 and 0</li>
-<li><strong>size</strong> – The size of the dilation</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A binary dilated image of type uint8 (wanted by blobdetector)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="grasp_finder.least_square_solver">
-<code class="descclassname">grasp_finder.</code><code class="descname">least_square_solver</code><span class="sig-paren">(</span><em>lpoints</em>, <em>rpoints</em><span class="sig-paren">)</span><a class="headerlink" href="#grasp_finder.least_square_solver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses the least square method the estimate the transformation matrix and translation vector</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>lpoints</strong> – List of coordinates (x,y), of at least length 3, for left camera</li>
-<li><strong>rpoints</strong> – List of coordinates (x,y), of at least length 3, for right camera</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Transformation matrix A and translation vector t</p>
 </td>
 </tr>
 </tbody>
@@ -344,7 +215,8 @@ If one point is found it stops looking at that side.</p>
         <li class="right" >
           <a href="crop_images.html" title="crop_images"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="computer_vision.html" >Documentation for computer vision!</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -23,7 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="snap_pic" href="snap_pic.html" /> 
+    <link rel="next" title="Documentation for computer vision!" href="computer_vision.html" />
+    <link rel="prev" title="Documentation for ROS!" href="ROS.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -36,9 +37,13 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="snap_pic.html" title="snap_pic"
+          <a href="computer_vision.html" title="Documentation for computer vision!"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ROS.html" title="Documentation for ROS!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="ROS.html" accesskey="U">Documentation for ROS!</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -49,13 +54,6 @@
             
   <div class="section" id="module-testing">
 <span id="testing"></span><h1>testing<a class="headerlink" href="#module-testing" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="testing.test_affine">
-<code class="descclassname">testing.</code><code class="descname">test_affine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#testing.test_affine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds similarities between the two images and uses this to find the affine transformation between the images.
-Plots the true coordinate in the left image and the transformed in the right image.</p>
-</dd></dl>
-
 <dl class="function">
 <dt id="testing.test_blobdetection">
 <code class="descclassname">testing.</code><code class="descname">test_blobdetection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#testing.test_blobdetection" title="Permalink to this definition">¶</a></dt>
@@ -91,6 +89,14 @@ ESC to exit</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="testing.test_transformation">
+<code class="descclassname">testing.</code><code class="descname">test_transformation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#testing.test_transformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds similarities between the two images. Uses RANSAC to remove outliers. Least square solver is used for the
+inliers to estimate the transformation.
+Plots the true coordinate in the left image and the transformed in the right image.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="testing.test_triangulation">
 <code class="descclassname">testing.</code><code class="descname">test_triangulation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#testing.test_triangulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Triangulates using the affine transformation.
@@ -106,8 +112,11 @@ Print the global coordinates</p>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="snap_pic.html"
-                        title="previous chapter">snap_pic</a></p>
+  <p class="topless"><a href="ROS.html"
+                        title="previous chapter">Documentation for ROS!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="computer_vision.html"
+                        title="next chapter">Documentation for computer vision!</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -132,9 +141,13 @@ Print the global coordinates</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="snap_pic.html" title="snap_pic"
+          <a href="computer_vision.html" title="Documentation for computer vision!"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ROS.html" title="Documentation for ROS!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="ROS.html" >Documentation for ROS!</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
