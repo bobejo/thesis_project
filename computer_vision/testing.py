@@ -3,12 +3,14 @@ import cv2
 import cnn
 import paths
 import img_numpy
+import crop_images as ci
 import image_registration as tf
 import grasp_finder as gf
 import image_segmentation as iseg
 from matplotlib import pyplot as plt
 from keras.models import load_model
 from Loss import LogLoss, accuracy
+from mpl_toolkits.mplot3d import Axes3D
 
 '''
 Contains test for several functions
@@ -19,26 +21,85 @@ row_size = 500
 col_size = 400
 
 
+def test_cropping():
+    """
+    Plots the points in the cropped image and the full image
+    :return:
+    """
+    pathleft = 'C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\*.jpg'
+    pathright = 'C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\*.jpg'
+    # ci.crop_images(pathleft)
+    # ci.crop_images(pathright)
+
+    [lp, rp] = gf.featurematching_coordinates(paths.test_path_left1, paths.test_path_right1, 30)
+    A, t = tf.least_square_solver(lp, rp, 320)
+    for i in range(0, 10):
+        croppedleft = cv2.imread(paths.test_path_left1, 0)
+        fullleft = cv2.imread(paths.test_path_left2, 0)
+        croppedright = cv2.imread(paths.test_path_right1, 0)
+        fullright = cv2.imread(paths.test_path_right2, 0)
+
+        left_points = lp[i]
+        right_points = tf.affine_transformation(A, t, left_points)
+        left_points = int(left_points[0]), int(left_points[1])
+        right_points = int(right_points[0]), int(right_points[1])
+        cv2.circle(croppedleft, left_points, 1, (255, 0, 0), 3)
+        cv2.circle(croppedright, right_points, 1, (255, 0, 0), 3)
+
+        ltri = np.add(left_points, (1380, 400))
+        rtri = np.add(right_points, (930, 400))
+        cv2.circle(fullleft, tuple(ltri), 1, (255, 0, 0), 3)
+        cv2.circle(fullright, tuple(rtri), 1, (255, 0, 0), 3)
+
+        fig, axs = plt.subplots(2, 2, figsize=(30, 30))
+        axs[0][0].imshow(croppedleft, cmap='gray')
+        axs[0][1].imshow(fullleft, cmap='gray')
+        axs[1][0].imshow(croppedright, cmap='gray')
+        axs[1][1].imshow(fullright, cmap='gray')
+
+        plt.show()
+        cv2.waitKey(0)
+
+
 def test_triangulation():
     """
     Triangulates using the affine transformation.
     Print the global coordinates
     """
-
+    offset_left = (1380, 400)
+    offset_right = (930, 400)
     # The path for images taken with both cameras at the same time
     test_path_right = paths.test_path_right
     test_path_left = paths.test_path_left
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
 
-    for i in range(0, 15):
-        [lpt, rpt] = gf.featurematching_coordinates(test_path_left, test_path_right, 30)
-        lcm = np.load(paths.left_matrix_path)
-        rcm = np.load(paths.right_matrix_path)
-        ltri = np.add(lpt[i], (400, 930))
-        rtri = np.add(rpt[i], (400, 1380))
-        tri = gf.triangulate_point(ltri, rtri, lcm, rcm)
-        print('X ' + str(tri[0][0]))
-        print('Y ' + str(tri[1][0]))
-        print('Z ' + str(tri[2][0]))
+    [lpt, rpt] = gf.featurematching_coordinates(test_path_left, test_path_right, 40)
+    for i in range(0, 36):
+
+        if len(lpt) < 1:
+            return None
+        else:
+            lcm = np.load(paths.left_matrix_path)
+            rcm = np.load(paths.right_matrix_path)
+            ltri = np.add(lpt[i], offset_left)
+            rtri = np.add(rpt[i], offset_right)
+
+            tri2 = cv2.triangulatePoints(lcm, rcm, ltri.reshape(2, 1), rtri.reshape(2, 1))
+            print('Lamda ' + str(tri2[3][0]))
+            # tri2 /= tri2[3]
+            print('=========OpenCV=============')
+            print('X ' + str(tri2[0][0]))
+            print('Y ' + str(tri2[1][0]))
+            print('Z ' + str(tri2[2][0]))
+
+            ax.scatter(tri2[0][0], tri2[1][0], tri2[2][0])
+
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
+
+    plt.show()
 
 
 def test_prediction():
@@ -82,13 +143,13 @@ def test_transformation():
         left_points = lpt[i]
         right_points = tf.affine_transformation(A, t, left_points)
         print('==========================')
-        print('True left points ' + str(lpt[i]))
+        print('True left points ' + str(left_points))
         print('True right points ' + str(rpt[i]))
         print('Estimated right points ' + str(right_points))
         print('==========================')
 
-        left_points = int(lpt[i][0]), int(lpt[i][1])
-        right_points = int(rpt[i][0]), int(rpt[i][1])
+        left_points = int(left_points[0]), int(left_points[1])
+        right_points = int(right_points[0]), int(right_points[1])
         cv2.circle(img1, left_points, 3, (255, 0, 0), 5)
         cv2.circle(img2, right_points, 3, (0, 0, 0), 5)
         cv2.imshow('left', img1)
@@ -201,10 +262,11 @@ def test_contact_points():
         cv2.imshow('Contact points', di)
         cv2.waitKey(0)
 
-
 # test_generation()
-#test_transformation()
+# test_transformation()
 # test_contour()
 # test_contact_points()
 # test_blobdetection()
 # test_prediction()
+# test_triangulation()
+# test_cropping()
