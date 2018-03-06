@@ -31,34 +31,32 @@ def test_cropping():
     # ci.crop_images(pathleft)
     # ci.crop_images(pathright)
 
-    [lp, rp] = gf.featurematching_coordinates(paths.test_path_left1, paths.test_path_right1, 30)
-    A, t = tf.least_square_solver(lp, rp, 320)
-    for i in range(0, 10):
-        croppedleft = cv2.imread(paths.test_path_left1, 0)
-        fullleft = cv2.imread(paths.test_path_left2, 0)
-        croppedright = cv2.imread(paths.test_path_right1, 0)
-        fullright = cv2.imread(paths.test_path_right2, 0)
-
+    [lp, rp] = gf.featurematching_coordinates(paths.test_path_left1, paths.test_path_right1, 31)
+    A, t = tf.least_square_solver(lp, rp, 330)
+    croppedleft = cv2.imread(paths.test_path_left1, 0)
+    fullleft = cv2.imread(paths.test_path_left2, 0)
+    croppedright = cv2.imread(paths.test_path_right1, 0)
+    fullright = cv2.imread(paths.test_path_right2, 0)
+    for i in range(0, len(lp)):
         left_points = lp[i]
         right_points = tf.affine_transformation(A, t, left_points)
         left_points = int(left_points[0]), int(left_points[1])
         right_points = int(right_points[0]), int(right_points[1])
-        cv2.circle(croppedleft, left_points, 1, (255, 0, 0), 3)
-        cv2.circle(croppedright, right_points, 1, (255, 0, 0), 3)
+        cv2.circle(croppedleft, left_points, 2, (255, 0, 0), 3)
+        cv2.circle(croppedright, right_points, 2, (255, 0, 0), 3)
 
         ltri = np.add(left_points, (1380, 400))
         rtri = np.add(right_points, (930, 400))
-        cv2.circle(fullleft, tuple(ltri), 1, (255, 0, 0), 3)
-        cv2.circle(fullright, tuple(rtri), 1, (255, 0, 0), 3)
+        cv2.circle(fullleft, tuple(ltri), 2, (255, 0, 0), 3)
+        cv2.circle(fullright, tuple(rtri), 2, (255, 0, 0), 3)
 
-        fig, axs = plt.subplots(2, 2, figsize=(30, 30))
-        axs[0][0].imshow(croppedleft, cmap='gray')
-        axs[0][1].imshow(fullleft, cmap='gray')
-        axs[1][0].imshow(croppedright, cmap='gray')
-        axs[1][1].imshow(fullright, cmap='gray')
+    fig, axs = plt.subplots(2, 2, figsize=(30, 30))
+    axs[0][0].imshow(croppedleft, cmap='gray')
+    axs[0][1].imshow(fullleft, cmap='gray')
+    axs[1][0].imshow(croppedright, cmap='gray')
+    axs[1][1].imshow(fullright, cmap='gray')
 
-        plt.show()
-        cv2.waitKey(0)
+    plt.show()
 
 
 def test_triangulation():
@@ -69,32 +67,34 @@ def test_triangulation():
     offset_left = (1380, 400)
     offset_right = (930, 400)
     # The path for images taken with both cameras at the same time
-    test_path_right = paths.test_path_right
-    test_path_left = paths.test_path_left
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
+    test_path_right = paths.test_path_right1
+    test_path_left = paths.test_path_left1
 
+    img = cv2.imread(paths.test_path_left2)
+    fig = plt.figure()
+    fig2 = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax2 = fig2.add_subplot(111)
     [lpt, rpt] = gf.featurematching_coordinates(test_path_left, test_path_right, 40)
+
     for i in range(0, 36):
 
         if len(lpt) < 1:
+            print('No features found')
             return None
         else:
             lcm = np.load(paths.left_matrix_path)
             rcm = np.load(paths.right_matrix_path)
             ltri = np.add(lpt[i], offset_left)
             rtri = np.add(rpt[i], offset_right)
+            tri = gf.triangulate_point(ltri, rtri, lcm, rcm)
 
-            tri2 = cv2.triangulatePoints(lcm, rcm, ltri.reshape(2, 1), rtri.reshape(2, 1))
-            print('Lamda ' + str(tri2[3][0]))
-            # tri2 /= tri2[3]
-            print('=========OpenCV=============')
-            print('X ' + str(tri2[0][0]))
-            print('Y ' + str(tri2[1][0]))
-            print('Z ' + str(tri2[2][0]))
+            ax.scatter(tri[0], tri[1], tri[2], c='b', marker='o')
+            ax2.scatter(ltri[0], ltri[1])
 
-            ax.scatter(tri2[0][0], tri2[1][0], tri2[2][0])
-
+    ax2.imshow(img)
+    ax2.set_xlabel('X Label')
+    ax2.set_ylabel('Y Label')
     ax.set_xlabel('X Label')
     ax.set_ylabel('Y Label')
     ax.set_zlabel('Z Label')
@@ -262,11 +262,12 @@ def test_contact_points():
         cv2.imshow('Contact points', di)
         cv2.waitKey(0)
 
+
 # test_generation()
 # test_transformation()
 # test_contour()
 # test_contact_points()
 # test_blobdetection()
 # test_prediction()
-# test_triangulation()
+test_triangulation()
 # test_cropping()

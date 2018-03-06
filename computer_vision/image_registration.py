@@ -83,7 +83,7 @@ def ransac_inliers(lpoints, rpoints, threshold):
     N = len(lpoints)
     new_lpoints = []
     new_rpoints = []
-    loop_length = 10000
+    loop_length = 500 * N
     all_loss = []
 
     for i in range(0, loop_length):
@@ -136,6 +136,10 @@ def least_square_solver(lpoints, rpoints, threshold):
     lpoints, rpoints = ransac_inliers(lpoints, rpoints, threshold)
 
     N = len(lpoints)
+    if N < 3:
+        print('Not enough inliers found!')
+        return None, None
+
     M = np.array([[lpoints[0][0], lpoints[0][1], 1, 0, 0, 0], [0, 0, 0, lpoints[0][0], lpoints[0][1], 1]])
     v = np.array([[rpoints[0][0]], [rpoints[0][1]]])
 
@@ -146,7 +150,6 @@ def least_square_solver(lpoints, rpoints, threshold):
         v = np.vstack((v, v_row))
 
     theta, r, ra, s = np.linalg.lstsq(M, v)
-    print(theta)
     A = np.array([[theta[0], theta[1]], [theta[3], theta[4]]])
     t = np.array([theta[2], theta[5]])
     return A, t

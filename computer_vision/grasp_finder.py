@@ -69,11 +69,12 @@ def featurematching_coordinates(limg, rimg, threshold=10):
     :return: (lpoints, rpoints): The coordinates for each match in left image and right image
     """
 
-    img1 = cv2.imread(limg, 0)
-    img2 = cv2.imread(rimg, 0)
+    if type(limg) == str:
+        limg = cv2.imread(limg, 0)
+        rimg = cv2.imread(rimg, 0)
     orb = cv2.ORB_create()
-    kp1, des1 = orb.detectAndCompute(img1, None)
-    kp2, des2 = orb.detectAndCompute(img2, None)
+    kp1, des1 = orb.detectAndCompute(limg, None)
+    kp2, des2 = orb.detectAndCompute(rimg, None)
 
     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
     matches = bf.match(des1, des2)
@@ -168,16 +169,24 @@ def triangulate_point(lpoint, rpoint, left_cm, right_cm):
     :return: 3D point in global coordinates
     """
 
+    """
+
     M = np.zeros((6, 5))
     for row in range(0, 3):
         M[row, 2:] = left_cm[row, :3]
         M[row + 3, 2:] = right_cm[row, :3]
     M[:3, 0] = -np.hstack((lpoint, [1]))
     M[3:, 1] = -np.hstack((rpoint, [1]))
-
     b = np.zeros(6)
     b[:3] = -left_cm[:, 3].reshape(3)
     b[3:] = -right_cm[:, 3].reshape(3)
 
     theta = np.linalg.lstsq(M, b)
-    return theta[0][0:]
+    return theta[0][:]
+    """
+
+    theta = cv2.triangulatePoints(left_cm, right_cm, lpoint, rpoint)
+
+    theta /= theta[3]
+    theta = theta[:3]
+    return theta
