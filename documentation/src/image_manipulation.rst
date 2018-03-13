@@ -1,5 +1,5 @@
-image_segmentation
+image_manipulation
 ==================
-.. automodule:: image_segmentation
+.. automodule:: image_manipulation
    :members:
    :show-inheritance:

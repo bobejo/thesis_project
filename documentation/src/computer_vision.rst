@@ -8,10 +8,9 @@ Documentation for computer vision!
 
    annotation
    cnn
-   crop_images
    grasp_finder
    image_registration
-   image_segmentation
+   image_manipulation
    img_numpy
    snap_pic
    testing
