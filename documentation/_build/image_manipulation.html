@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>cnn &#8212; master  documentation</title>
+    <title>image_manipulation &#8212; master  documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="grasp_finder" href="grasp_finder.html" />
-    <link rel="prev" title="annotation" href="annotation.html" /> 
+    <link rel="next" title="img_numpy" href="img_numpy.html" />
+    <link rel="prev" title="image_registration" href="image_registration.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -37,10 +37,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="grasp_finder.html" title="grasp_finder"
+          <a href="img_numpy.html" title="img_numpy"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="annotation.html" title="annotation"
+          <a href="image_registration.html" title="image_registration"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="computer_vision.html" accesskey="U">Documentation for computer vision!</a> &#187;</li> 
@@ -52,27 +52,23 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-cnn">
-<span id="cnn"></span><h1>cnn<a class="headerlink" href="#module-cnn" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-image_manipulation">
+<span id="image-manipulation"></span><h1>image_manipulation<a class="headerlink" href="#module-image_manipulation" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="cnn.create_generators">
-<code class="descclassname">cnn.</code><code class="descname">create_generators</code><span class="sig-paren">(</span><em>input_path</em>, <em>target_path</em>, <em>batch_size</em>, <em>row_size</em>, <em>col_size</em><span class="sig-paren">)</span><a class="headerlink" href="#cnn.create_generators" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a two generator with the training data (input images and target images) and returns a zipped generator.
-The generator first rescales the input and target images and then randomly flips and shifts them in the same way.</p>
+<dt id="image_manipulation.binary_image">
+<code class="descclassname">image_manipulation.</code><code class="descname">binary_image</code><span class="sig-paren">(</span><em>img</em>, <em>threshold</em><span class="sig-paren">)</span><a class="headerlink" href="#image_manipulation.binary_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set all parameters below the threshold to 0 and all above to 1</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input_path</strong> – The path of the input images that will be used.</li>
-<li><strong>target_path</strong> – The path of the target images that wil be used.</li>
-<li><strong>batch_size</strong> – The number of images generated per batch.</li>
-<li><strong>row_size</strong> – The wanted row size of the generated image</li>
-<li><strong>col_size</strong> – The wanted column size of the generated image</li>
+<li><strong>img</strong> – The image</li>
+<li><strong>threshold</strong> – The threshold</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Tuple with the two zipped generators</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An binary image where each pixel is either 1 or 0</p>
 </td>
 </tr>
 </tbody>
@@ -80,34 +76,35 @@ The generator first rescales the input and target images and then randomly flips
 </dd></dl>
 
 <dl class="function">
-<dt id="cnn.create_simple_model">
-<code class="descclassname">cnn.</code><code class="descname">create_simple_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cnn.create_simple_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates an simple model with optimizer and loss function</p>
+<dt id="image_manipulation.crop_images">
+<code class="descclassname">image_manipulation.</code><code class="descname">crop_images</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#image_manipulation.crop_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes multiple images and crops to each blue box.
+Cropping sizes are chosen manually</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A simple CNN model</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – The path to the folder where the images are</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="function">
-<dt id="cnn.get_prediction">
-<code class="descclassname">cnn.</code><code class="descname">get_prediction</code><span class="sig-paren">(</span><em>model</em>, <em>x_test</em><span class="sig-paren">)</span><a class="headerlink" href="#cnn.get_prediction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Does keras.prediction with the testing data.</p>
+<dt id="image_manipulation.dilate_image">
+<code class="descclassname">image_manipulation.</code><code class="descname">dilate_image</code><span class="sig-paren">(</span><em>img</em>, <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#image_manipulation.dilate_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dilates the binary image, making the lines thicker and more connected</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> – The model the prediction will be done on</li>
-<li><strong>x_test</strong> – The testing images as numpy arrays</li>
+<li><strong>img</strong> – Binary image</li>
+<li><strong>size</strong> – Size of the dilation</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">p: The prediction output</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Dilated binary image</p>
 </td>
 </tr>
 </tbody>
@@ -115,24 +112,21 @@ The generator first rescales the input and target images and then randomly flips
 </dd></dl>
 
 <dl class="function">
-<dt id="cnn.train_model">
-<code class="descclassname">cnn.</code><code class="descname">train_model</code><span class="sig-paren">(</span><em>x_train_path</em>, <em>y_train_path</em>, <em>x_test_path</em>, <em>y_test_path</em>, <em>batch_size</em>, <em>steps_per_epoch</em>, <em>training_epochs</em><span class="sig-paren">)</span><a class="headerlink" href="#cnn.train_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates the model with the loss function and optimizer
-Creates the generators for generating input and target images
-Trains the model with the training data and saves it when done.</p>
+<dt id="image_manipulation.image_segmentation">
+<code class="descclassname">image_manipulation.</code><code class="descname">image_segmentation</code><span class="sig-paren">(</span><em>img</em>, <em>threshold</em>, <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#image_manipulation.image_segmentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does image segmentation on the input image. First converts to binary image then dilates it</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x_train_path</strong> – The path of the input training images</li>
-<li><strong>y_train_path</strong> – The path of the target training images</li>
-<li><strong>x_test_path</strong> – The path of the input validation images</li>
-<li><strong>y_test_path</strong> – The path of the target validation images</li>
-<li><strong>batch_size</strong> – The number of images to be generated per batch</li>
-<li><strong>steps_per_epoch</strong> – The number of images used per epoch</li>
-<li><strong>epochs</strong> – The number of epochs the training is done for</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> – The output from prediction</li>
+<li><strong>threshold</strong> – The threshold for choosing 1 and 0</li>
+<li><strong>size</strong> – The size of the dilation</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A binary dilated image of type uint8 (wanted by blobdetector)</p>
 </td>
 </tr>
 </tbody>
@@ -148,11 +142,11 @@ Trains the model with the training data and saves it when done.</p>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="annotation.html"
-                        title="previous chapter">annotation</a></p>
+  <p class="topless"><a href="image_registration.html"
+                        title="previous chapter">image_registration</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="grasp_finder.html"
-                        title="next chapter">grasp_finder</a></p>
+  <p class="topless"><a href="img_numpy.html"
+                        title="next chapter">img_numpy</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -177,10 +171,10 @@ Trains the model with the training data and saves it when done.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="grasp_finder.html" title="grasp_finder"
+          <a href="img_numpy.html" title="img_numpy"
              >next</a> |</li>
         <li class="right" >
-          <a href="annotation.html" title="annotation"
+          <a href="image_registration.html" title="image_registration"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="computer_vision.html" >Documentation for computer vision!</a> &#187;</li> 

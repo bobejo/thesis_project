@@ -1,0 +1,243 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>image_registration &#8212; master  documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="image_manipulation" href="image_manipulation.html" />
+    <link rel="prev" title="grasp_finder" href="grasp_finder.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="image_manipulation.html" title="image_manipulation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="grasp_finder.html" title="grasp_finder"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="computer_vision.html" accesskey="U">Documentation for computer vision!</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-image_registration">
+<span id="image-registration"></span><h1>image_registration<a class="headerlink" href="#module-image_registration" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="image_registration.affine_transformation">
+<code class="descclassname">image_registration.</code><code class="descname">affine_transformation</code><span class="sig-paren">(</span><em>A</em>, <em>t</em>, <em>lpoints</em><span class="sig-paren">)</span><a class="headerlink" href="#image_registration.affine_transformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the coordinates of the right image using affine transformation
+rpoints=A*lpoints+t</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>A</strong> – Transformation matrix (2x2)</li>
+<li><strong>t</strong> – Translation vector</li>
+<li><strong>lpoints</strong> – Points from left image</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The corresponding points in the right image</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="image_registration.affine_transformation_solver">
+<code class="descclassname">image_registration.</code><code class="descname">affine_transformation_solver</code><span class="sig-paren">(</span><em>lpoints</em>, <em>rpoints</em><span class="sig-paren">)</span><a class="headerlink" href="#image_registration.affine_transformation_solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the transformation matrix and translation vector with 3 coordinates.
+theta=M</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lpoints</strong> – List of coordinates (x,y), of at least length 3, for left camera</li>
+<li><strong>rpoints</strong> – List of coordinates (x,y), of at least length 3, for right camera</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Transformation matrix A and translation vector t</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="image_registration.camera_transform">
+<code class="descclassname">image_registration.</code><code class="descname">camera_transform</code><span class="sig-paren">(</span><em>T</em>, <em>U_camera</em><span class="sig-paren">)</span><a class="headerlink" href="#image_registration.camera_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes camera points and transform them to the UR10 base frame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>T</strong> – Transformation matrix (3x4)</li>
+<li><strong>U</strong> – Triangulated points in camera frame (X;Y;Z)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="image_registration.get_residuals">
+<code class="descclassname">image_registration.</code><code class="descname">get_residuals</code><span class="sig-paren">(</span><em>A</em>, <em>t</em>, <em>lpoints</em>, <em>rpoints</em><span class="sig-paren">)</span><a class="headerlink" href="#image_registration.get_residuals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the residuals for the transformation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>A</strong> – Transformation matrix</li>
+<li><strong>t</strong> – Translation vector</li>
+<li><strong>lpoints</strong> – Points from left image that were used for calculating A and t</li>
+<li><strong>rpoints</strong> – Points from right image</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The absolute residual</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="image_registration.least_square_solver">
+<code class="descclassname">image_registration.</code><code class="descname">least_square_solver</code><span class="sig-paren">(</span><em>lpoints</em>, <em>rpoints</em>, <em>threshold</em><span class="sig-paren">)</span><a class="headerlink" href="#image_registration.least_square_solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the least square method the estimate the transformation matrix and translation vector.
+First removes outliers using ransac_inliers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lpoints</strong> – List of coordinates (x,y), of at least length 3, for left camera</li>
+<li><strong>rpoints</strong> – List of coordinates (x,y), of at least length 3, for right camera</li>
+<li><strong>threshold</strong> – The treshold used for removing outliers in RANSAC</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Transformation matrix A and translation vector t</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="image_registration.ransac_inliers">
+<code class="descclassname">image_registration.</code><code class="descname">ransac_inliers</code><span class="sig-paren">(</span><em>lpoints</em>, <em>rpoints</em>, <em>threshold</em><span class="sig-paren">)</span><a class="headerlink" href="#image_registration.ransac_inliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes matched points from feature_match, does affine transformation and removes points which gives outliers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lpoints</strong> – Left image features from feature_matching</li>
+<li><strong>rpoints</strong> – Right image features from feature_matching</li>
+<li><strong>threshold</strong> – The threshold for classifying points as outliers</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The inliers for left and right points</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="grasp_finder.html"
+                        title="previous chapter">grasp_finder</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="image_manipulation.html"
+                        title="next chapter">image_manipulation</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="image_manipulation.html" title="image_manipulation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="grasp_finder.html" title="grasp_finder"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">master  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="computer_vision.html" >Documentation for computer vision!</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright .
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
+    </div>
+  </body>
+</html>
