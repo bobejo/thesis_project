@@ -5,9 +5,10 @@ import random
 
 def camera_transform(T, U_camera):
     """
+    Takes camera points and transform them to the UR10 base frame.
 
     :param T: Transformation matrix (3x4)
-    :param U: Points (X;Y;Z)
+    :param U: Triangulated points in camera frame (X;Y;Z)
     :return:
     """
 
