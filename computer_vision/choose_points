@@ -24,10 +24,10 @@ nr_clicked = 0
 drag_end = None
 
 
-image_path = 'C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\*.jpg'
-save='C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\left_move.npy'
-#save = 'C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\right_move.npy'
-#image_path = 'C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\right_pipe08_18_23.jpg'
+#image_path = 'C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\camera_calibration\\left\\leftCalibration13_39_51.jpg'
+#save='C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\left_move.npy'
+save = 'C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\right_move.npy'
+image_path = 'C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\camera_calibration\\right\\rightCalibration13_39_51.jpg'
 
 drags = []
 i = 1

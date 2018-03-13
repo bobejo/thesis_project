@@ -3,6 +3,18 @@ from scipy.linalg import solve
 import random
 
 
+def camera_transform(T, U_camera):
+    """
+
+    :param T: Transformation matrix (3x4)
+    :param U: Points (X;Y;Z)
+    :return:
+    """
+
+    U_camera = np.vstack([U_camera, 1])
+    T = np.vstack([T, [0, 0, 0, 1]])
+    return np.dot(T, U_camera)
+
 def affine_transformation(A, t, lpoints):
     """
     Calculates the coordinates of the right image using affine transformation
@@ -13,10 +25,9 @@ def affine_transformation(A, t, lpoints):
     :param lpoints: Points from left image
     :return: The corresponding points in the right image
     """
-
     mul = np.matmul(A.reshape(2, 2), lpoints)
     rpoints = np.add(mul.reshape(2, 1), t)
-    return rpoints[0], rpoints[1]
+    return tuple((rpoints[0][0], rpoints[1][0]))
 
 
 def affine_transformation_solver(lpoints, rpoints):
@@ -83,7 +94,7 @@ def ransac_inliers(lpoints, rpoints, threshold):
     N = len(lpoints)
     new_lpoints = []
     new_rpoints = []
-    loop_length = 500 * N
+    loop_length = 10000 + 500 * N
     all_loss = []
 
     for i in range(0, loop_length):
@@ -98,8 +109,8 @@ def ransac_inliers(lpoints, rpoints, threshold):
                 rsample.append(rpoints[rand_index])
                 index.append(rand_index)
                 j += 1
-
         [A, t] = affine_transformation_solver(lsample, rsample)
+
         loss = get_residuals(A, t, lpoints, rpoints)
         all_loss = all_loss + [loss]
 
@@ -110,15 +121,15 @@ def ransac_inliers(lpoints, rpoints, threshold):
     unique_lpoints = []
     for tup in new_lpoints:
         for i in range(0, 3):
-            if tup[i] not in unique_lpoints:
-                unique_lpoints.append(tup[i])
+            if tuple(tup[i]) not in unique_lpoints:
+                unique_lpoints.append(tuple(tup[i]))
 
     unique_rpoints = []
 
     for tup in new_rpoints:
         for i in range(0, 3):
-            if tup[i] not in unique_rpoints:
-                unique_rpoints.append(tup[i])
+            if tuple(tup[i]) not in unique_rpoints:
+                unique_rpoints.append(tuple(tup[i]))
 
     return unique_lpoints, unique_rpoints
 
@@ -134,7 +145,7 @@ def least_square_solver(lpoints, rpoints, threshold):
     :return: Transformation matrix A and translation vector t
     """
     lpoints, rpoints = ransac_inliers(lpoints, rpoints, threshold)
-
+    print('Ransac points ' + str(len(lpoints)))
     N = len(lpoints)
     if N < 3:
         print('Not enough inliers found!')
