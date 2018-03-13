@@ -14,11 +14,10 @@ y_test_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\com
 test_path_right = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\inp\\right\\right\\rightpipe08_41_37_2.jpg'
 test_path_left = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\inp\\left\\left\\leftpipe08_41_37_2.jpg'
 
-
-test_path_right1 = 'C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\croppedleft_pipe08_09_55.jpg'
-test_path_left1 = 'C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\croppedright_pipe08_09_55.jpg'
-test_path_right2 = 'C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\left_pipe08_09_55.jpg'
-test_path_left2 = 'C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\right_pipe08_09_55.jpg'
+test_path_right1 = 'C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\croppedleft_pipe08_18_23.jpg'
+test_path_left1 = 'C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\croppedright_pipe08_18_23.jpg'
+test_path_right2 = 'C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\left_pipe08_18_23.jpg'
+test_path_left2 = 'C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\camera_calibration\\left\\leftCalibration13_39_51.jpg'
 
 # The path to the model
 model_path = 'C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\computer_vision\\models\\simple_model.h5'

@@ -29,8 +29,6 @@ def crop_images(path):
             print("File: " + a[1] + " skipped")
 
 
-
-
 def binary_image(img, threshold):
     """
     Set all parameters below the threshold to 0 and all above to 1

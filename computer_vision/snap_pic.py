@@ -31,4 +31,4 @@ def get_time():
     return t[13:21]
 
 # Choose name of pipe
-#snap_pic("Calibration")
+# snap_pic("Calibration")

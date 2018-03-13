@@ -64,7 +64,7 @@ def create_generators(input_path, target_path, batch_size, row_size, col_size):
     return train_generator
 
 
-def train_model(x_train_path,y_train_path,x_test_path,y_test_path,batch_size, steps_per_epoch, training_epochs):
+def train_model(x_train_path, y_train_path, x_test_path, y_test_path, batch_size, steps_per_epoch, training_epochs):
     """
     Creates the model with the loss function and optimizer
     Creates the generators for generating input and target images
@@ -124,5 +124,3 @@ def get_prediction(model, x_test):
         x_test.reshape(1, x_test.shape[0], x_test.shape[1], x_test.shape[2])
     p = model.predict(x_test, batch_size=2, verbose=1)
     return p
-
-

@@ -16,6 +16,7 @@ def camera_transform(T, U_camera):
     T = np.vstack([T, [0, 0, 0, 1]])
     return np.dot(T, U_camera)
 
+
 def affine_transformation(A, t, lpoints):
     """
     Calculates the coordinates of the right image using affine transformation

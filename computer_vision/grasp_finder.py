@@ -4,7 +4,7 @@ import numpy as np;
 # import cnn
 # from img_numpy import imgs2numpy
 # from Loss import LogLoss, accuracy
-#from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 from scipy import ndimage
 import operator
 
@@ -179,5 +179,3 @@ def triangulate_point(lpoint, rpoint, left_cm, right_cm):
         theta = theta / theta[3]
         theta = theta[:3]
         return theta
-
-

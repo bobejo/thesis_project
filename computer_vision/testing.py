@@ -3,19 +3,18 @@ import cv2
 # import cnn
 import paths
 import img_numpy
-import crop_images as ci
 import image_registration as tf
 import grasp_finder as gf
 import image_manipulation as iseg
-from matplotlib import pyplot as plt
+
+# from matplotlib import pyplot as plt
 # from keras.models import load_model
 # from Loss import LogLoss, accuracy
-from mpl_toolkits.mplot3d import Axes3D
+# from mpl_toolkits.mplot3d import Axes3D
 
 '''
 Contains test for several functions
 '''
-
 batch_size = 1
 row_size = 500
 col_size = 400
@@ -81,13 +80,13 @@ def test_triangulation():
     # lcm = np.genfromtxt('lcmbase.txt')
     # rcm = np.genfromtxt('rcmbase.txt')
 
-    lpt = [tuple(lp) for lp in np.load('C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\left_move.npy').tolist()]
-    rpt = [tuple(lp) for lp in np.load('C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\right_move.npy').tolist()]
+    lpt = [tuple(lp) for lp in np.load('C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\left2.npy').tolist()]
+    rpt = [tuple(lp) for lp in np.load('C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\right2.npy').tolist()]
     lpt = lpt[:24]
     rpt = rpt[:24]
     img2 = cv2.imread(paths.test_path_left2)
     img = cv2.imread(paths.test_path_right2)
-    points=[]
+    points = []
     T = np.array([[0, 1, 0, -900], [-1, 0, 0, -240], [0, 0, 1, 1910]])
     for i in range(0, len(lpt)):
         tri = gf.triangulate_point(lpt[i], rpt[i], rcm, lcm)
@@ -97,10 +96,11 @@ def test_triangulation():
         ax2.scatter(rpt[i][0], rpt[i][1], linewidths=10)
         ax.scatter(tri[0] + 600, tri[1] + 400, tri[2], marker=',', linewidths=15)
         ax1.scatter(tri2[0] + 400, tri2[1] + 60, tri2[2], marker=',', linewidths=15)
-        print(np.array([tri2[0]+400,tri2[1]+60,tri2[2]]))
-        points.append((np.array([tri2[0]+400,tri2[1]+60,tri2[2]])))
+        print((tri[0] + 600, tri[1] + 400, tri[2]))
+        print(np.array([tri2[0] + 400, tri2[1] + 60, tri2[2]]))
+        points.append((np.array([tri2[0] + 400, tri2[1] + 60, tri2[2]])))
 
-    np.save('robotpoints',points)
+    np.save('robotpoints', points)
     camera1 = np.linalg.lstsq(lcm[:3, :3], lcm[:, 3])
     camera2 = np.linalg.lstsq(rcm[:3, :3], rcm[:, 3])
     ax.scatter(camera1[0][0], camera1[0][1], camera1[0][2], c='b', marker='H', linewidths=15)
@@ -290,12 +290,11 @@ def test_contact_points():
         cv2.imshow('Contact points', di)
         cv2.waitKey(0)
 
-
 # test_generation()
 # test_transformation()
 # test_contour()
 # test_contact_points()
 # test_blobdetection()
 # test_prediction()
-test_triangulation()
+# test_triangulation()
 # test_cropping()
