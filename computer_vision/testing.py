@@ -1,22 +1,22 @@
 import numpy as np
 import cv2
-# import cnn
+import cnn
 import paths
 import img_numpy
 import image_registration as tf
 import grasp_finder as gf
 import image_manipulation as iseg
 
-# from matplotlib import pyplot as plt
-# from keras.models import load_model
-# from Loss import LogLoss, accuracy
-# from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import pyplot as plt
+from keras.models import load_model
+from Loss import LogLoss, accuracy
+from mpl_toolkits.mplot3d import Axes3D
 
 '''
 Contains test for several functions
 '''
 batch_size = 1
-row_size = 500
+row_size = 550
 col_size = 400
 
 
@@ -77,37 +77,37 @@ def test_triangulation():
 
     lcm = np.genfromtxt('cameraMatrix\\lcm.txt')
     rcm = np.genfromtxt('cameraMatrix\\rcm.txt')
-    # lcm = np.genfromtxt('lcmbase.txt')
-    # rcm = np.genfromtxt('rcmbase.txt')
+    # lcm = np.genfromtxt('lcm_matlab.txt')
+    # rcm = np.genfromtxt('rcm_matlab.txt')
 
     lpt = [tuple(lp) for lp in np.load('C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\left2.npy').tolist()]
     rpt = [tuple(lp) for lp in np.load('C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\right2.npy').tolist()]
     lpt = lpt[:24]
     rpt = rpt[:24]
-    img2 = cv2.imread(paths.test_path_left2)
-    img = cv2.imread(paths.test_path_right2)
-    points = []
-    T = np.array([[0, 1, 0, -900], [-1, 0, 0, -240], [0, 0, 1, 1910]])
+    img = cv2.imread(paths.test_path_left2)
+    img2 = cv2.imread(paths.test_path_right2)
+    T = np.array([[0, 1, 0, -900], [1, 0, 0, -240], [0, 0, 1, 1910]])
     for i in range(0, len(lpt)):
         tri = gf.triangulate_point(lpt[i], rpt[i], rcm, lcm)
         tri2 = tf.camera_transform(T, tri)
-        tri2[1] *= -1
+
         ax3.scatter(lpt[i][0], lpt[i][1], linewidths=10)
         ax2.scatter(rpt[i][0], rpt[i][1], linewidths=10)
         ax.scatter(tri[0] + 600, tri[1] + 400, tri[2], marker=',', linewidths=15)
-        ax1.scatter(tri2[0] + 400, tri2[1] + 60, tri2[2], marker=',', linewidths=15)
-        print((tri[0] + 600, tri[1] + 400, tri[2]))
-        print(np.array([tri2[0] + 400, tri2[1] + 60, tri2[2]]))
-        points.append((np.array([tri2[0] + 400, tri2[1] + 60, tri2[2]])))
+        ax1.scatter(tri2[0] + 600, tri2[1] + 535, tri2[2], marker=',', linewidths=15)
 
-    np.save('robotpoints', points)
     camera1 = np.linalg.lstsq(lcm[:3, :3], lcm[:, 3])
     camera2 = np.linalg.lstsq(rcm[:3, :3], rcm[:, 3])
-    ax.scatter(camera1[0][0], camera1[0][1], camera1[0][2], c='b', marker='H', linewidths=15)
-    ax.scatter(camera2[0][0], camera2[0][1], camera2[0][2], c='r', marker='H', linewidths=15)
-    ax1.scatter(0, 0, 0, c='k', marker='h', linewidths=20)
-    ax1.scatter(-900, -240, 1930, c='k', marker='h', linewidths=20)
-    ax1.scatter(-900, 440, 1930, c='k', marker='h', linewidths=20)
+
+    camera1base = tf.camera_transform(T, np.vstack(camera1[0]))
+    camera2base = tf.camera_transform(T, np.vstack(camera2[0]))
+    print(camera1base)
+    print(camera2base)
+    #ax.scatter(camera1[0][0], camera1[0][1], camera1[0][2], c='k', marker='H', linewidths=20)
+    #ax.scatter(camera2[0][0], camera2[0][1], camera2[0][2], c='k', marker='H', linewidths=20)
+    #ax1.scatter(0, 0, 0, c='k', marker='H', linewidths=20)
+    #ax1.scatter(camera1base[0], camera1base[1], camera1base[2], c='k', marker='H', linewidths=20)
+    #ax1.scatter(camera2base[0], camera2base[1], camera2base[2], c='k', marker='H', linewidths=20)
     ax3.imshow(img2)
     ax2.imshow(img)
     ax2.set_xlabel('X Label')
@@ -118,6 +118,8 @@ def test_triangulation():
     ax1.set_xlabel('X Label')
     ax1.set_ylabel('Y Label')
     ax1.set_zlabel('Z Label')
+    ax.set_title('Positions in camera frame')
+    ax1.set_title('Positions in robot base frame')
     fig.gca().invert_xaxis()
     plt.show()
 
@@ -130,16 +132,17 @@ def test_prediction():
     Press ANY button to change images.
     ESC to exit
     """
-    x_test_path = paths.x_test_path + '\\inp\\*.jpg'
-    y_test_path = paths.y_test_path + '\\inp\\*.jpg'
+    x_test_path = paths.x_test_path
+    y_test_path = paths.y_test_path
+    test_generator = cnn.create_generators(x_test_path, y_test_path, batch_size, row_size, col_size)
     model = load_model(paths.model_path, custom_objects={'LogRegLoss': LogLoss()})
-    x_test = img_numpy.imgs2numpy(x_test_path, 100)
-    y_test = img_numpy.imgs2numpy(y_test_path, 100)
-    p = cnn.get_prediction(model, x_test)
+
     for i in range(0, 100):
-        cv2.imshow('input', x_test[i])
-        cv2.imshow('target', y_test[i])
-        cv2.imshow('output', p[i])
+        x, target = next(test_generator)
+        p = cnn.get_prediction(model, x)
+        cv2.imshow('input', x[0])
+        cv2.imshow('target', target[0])
+        cv2.imshow('output', p[0])
         cv2.waitKey(0)
 
 
@@ -189,28 +192,23 @@ def test_contour():
     """
     Contour test
     """
-    # TODO Fix detector
     model = load_model(paths.model_path, custom_objects={'LogRegLoss': LogLoss()})
-    x_test_path = paths.x_test_path
-    y_test_path = paths.y_test_path
+    x_test_path = paths.x_train_path
+    y_test_path = paths.y_train_path
 
-    test_generator = cnn.create_generators(x_test_path, y_test_path, 1)
+    test_generator = cnn.create_generators(x_test_path, y_test_path, 1, row_size, col_size)
     for i in range(0, 100):
         (inp, target) = next(test_generator)
 
         p = cnn.get_prediction(model, inp)
-        bi = iseg.binary_image(p[0], 0.2)
+        bi = iseg.binary_image(p[0], 0.21)
         di = iseg.dilate_image(bi, 5)
-        cont = gf.contour_detector(di)
-
-        fig3, axs3 = plt.subplots(2, 2, figsize=(30, 30))
-
-        # Binary image and dilation
-        axs3[0][0].imshow(bi, cmap='gray')
-        axs3[0][1].imshow(di, cmap='gray')
-        axs3[1][0].imshow(inp[0])
-
-        plt.show()
+        img, mom,ang = gf.contour_detector(di)
+        print('Angle: ',ang)
+        cv2.imshow('cont', img)
+        cv2.circle(inp[0], mom, 3, (255, 0, 0), 3)
+        cv2.imshow('inp', inp[0])
+        cv2.waitKey(0)
 
 
 def test_blobdetection():
@@ -223,7 +221,7 @@ def test_blobdetection():
     x_test_path = paths.x_test_path
     y_test_path = paths.y_test_path
 
-    test_generator = cnn.create_generators(x_test_path, y_test_path, 1)
+    test_generator = cnn.create_generators(x_test_path, y_test_path, 1, 550, 400)
     for i in range(0, 100):
         (inp, target) = next(test_generator)
 
@@ -233,16 +231,17 @@ def test_blobdetection():
         k = gf.blob_detector(di)
         im_with_keypoints = cv2.drawKeypoints(di, k, np.array([]), (0, 0, 255),
                                               cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-
-        fig3, axs3 = plt.subplots(2, 2, figsize=(30, 30))
-
+        cv2.imshow('blobs', im_with_keypoints)
+        cv2.waitKey(0)
+        # fig3, axs3 = plt.subplots(2, 2, figsize=(30, 30))
+        plt.imshow(di, cmap='gray')
         # Binary image and dilation
-        axs3[0][0].imshow(bi, cmap='gray')
-        axs3[0][1].imshow(di, cmap='gray')
+        # axs3[0][0].imshow(bi, cmap='gray')
+        # axs3[0][1].imshow(di, cmap='gray')
 
         # Blob detection and input image
-        axs3[1][0].imshow(inp[0])
-        axs3[1][1].imshow(im_with_keypoints)
+        # axs3[1][0].imshow(inp[0])
+        # axs3[1][1].imshow(im_with_keypoints)
 
         plt.show()
 
@@ -290,11 +289,13 @@ def test_contact_points():
         cv2.imshow('Contact points', di)
         cv2.waitKey(0)
 
+
 # test_generation()
 # test_transformation()
-# test_contour()
+test_contour()
 # test_contact_points()
 # test_blobdetection()
 # test_prediction()
-# test_triangulation()
+
+#test_triangulation()
 # test_cropping()

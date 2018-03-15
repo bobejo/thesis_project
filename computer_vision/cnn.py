@@ -12,6 +12,7 @@ from keras.layers import Conv2D
 from keras.models import load_model
 from keras.preprocessing.image import ImageDataGenerator
 import paths
+from random import randint
 
 # Tensorflow dimension ordering
 K.set_image_dim_ordering('tf')
@@ -41,7 +42,7 @@ def create_generators(input_path, target_path, batch_size, row_size, col_size):
     target_datagen = ImageDataGenerator(**data_gen_args)
 
     # Use the same seed
-    seed = 1
+    seed = randint(1, 1000)
 
     input_generator = input_datagen.flow_from_directory(
         input_path,

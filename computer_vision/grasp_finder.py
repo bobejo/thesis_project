@@ -11,20 +11,25 @@ import operator
 
 def contour_detector(img):
     """
-    Finds the contour of the dilated image.
-
-    :param img: Dilated image
-    :return: The contour of the image
+    Finds the contours of the image. Returns the binary image with the contour that have the largest area
+     and the centroid of this area.
+    :param img: A binary dilated numpy image
+    :return: The input image with the contour, the centroid of this contour and the angle of the contour.
     """
-    # TODO. Fix settings
+    _, contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    l_area = 0
+    for c in contours:
+        area = cv2.contourArea(c, False)
+        if area > l_area:
+            l_area = area
+            cont = c
 
-    cv2.imshow('img', img)
-    im2, contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-    cv2.drawContours(im2, contours, -1, (0, 255, 0), 3)
-    cv2.imshow('im2', im2)
-    # cv2.imshow('cont',contours)
-    cv2.waitKey(0)
-    return im2
+    cv2.drawContours(img, cont, -1, 128, 6)
+    M = cv2.moments(cont)
+    cx = int(M['m10'] / M['m00'])
+    cy = int(M['m01'] / M['m00'])
+    _, _, angle = cv2.fitEllipse(cont)
+    return img, (cx, cy), angle
 
 
 def blob_detector(img):
@@ -37,7 +42,9 @@ def blob_detector(img):
     # TODO Fix settings
     # Settings for blobdetector
     params = cv2.SimpleBlobDetector_Params()
-    params.filterByCircularity = False
+    params.filterByCircularity = True
+    params.minCircularity = 0.5
+    params.maxCircularity = 0.8
     params.filterByColor = False
     params.filterByConvexity = False
     params.filterByInertia = False
@@ -45,9 +52,9 @@ def blob_detector(img):
     params.maxThreshold = 255
     params.thresholdStep = 10
     params.filterByArea = True
-    params.minArea = 200
+    params.minArea = 20
     # params.maxArea = 5000
-    params.minDistBetweenBlobs = 1
+    params.minDistBetweenBlobs = 0
 
     detector = cv2.SimpleBlobDetector_create(params)
     keypoints = detector.detect(img)
