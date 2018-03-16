@@ -16,7 +16,7 @@ def contour_detector(img):
     :param img: A binary dilated numpy image
     :return: The input image with the contour, the centroid of this contour and the angle of the contour.
     """
-    _, contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    _, contours, _ = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     l_area = 0
     for c in contours:
         area = cv2.contourArea(c, False)
