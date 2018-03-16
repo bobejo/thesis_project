@@ -29,13 +29,13 @@ Make sure to change to path of your images, models and camera matrices in the fi
 
 The position of the grasping point is found in the following way:
 
-* Each camera takes an image.
-* One of the image is cropped and propagated through the neural network.
-* The output image is converted to a binary image using thresholding and then dilated.
-* A contour detector is used to find the center of the largest area and its angle.
-* The corresponding point is found in the second image.
-* Triangulation is used to find the 3D coordinate.
-* The coordinate is transformed to base frame and sent, together with the angle.
+1. Each camera takes an image.
+2. One of the image is cropped and propagated through the neural network.
+3. The output image is converted to a binary image using thresholding and then dilated.
+4. A contour detector is used to find the center of the largest area and its angle.
+5. The corresponding point is found in the second image.
+6. Triangulation is used to find the 3D coordinate.
+7. The coordinate is transformed to base frame and sent, together with the angle.
 ## ROS
 
 ## Authors
