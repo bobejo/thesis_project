@@ -9,12 +9,11 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 
-* Python
-* Numpy & SciPy
-* Matplotlib
-* Tensorflow
-* Keras
-* ROS Indigo
+* [Numpy, Scipy and Matplotlib](https://www.scipy.org/install.html "Scipy installation")
+* [Tensorflow](https://www.tensorflow.org/install/ "Tensorflow installation")
+* [Keras](https://keras.io/#installation "Keras installation")
+* [h5py](http://docs.h5py.org/en/latest/build.html "h5 installation")
+* [ROS Indigo](http://wiki.ros.org/indigo/Installation "ROS installation")
 
 ### Installing
 
