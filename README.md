@@ -35,6 +35,7 @@ The position of the grasping point is found in the following way:
 * A contour detector is used to find the center of the largest area and its angle.
 * The corresponding point is found in the second image.
 * Triangulation is used to find the 3D coordinate.
+* The coordinate is transformed to base frame and sent, together with the angle.
 ## ROS
 
 ## Authors
