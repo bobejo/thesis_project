@@ -88,14 +88,14 @@ def train_model(x_train_path, y_train_path, x_test_path, y_test_path, batch_size
                         validation_data=test_generator,
                         validation_steps=200 / batch_size)
 
-    model.save('models\\simple_model.h5')
+    model.save('models\\simp_model.h5')
     print('Model saved')
 
 
 def create_simple_model():
     """
     Creates an simple model with optimizer and loss function
-
+    Memory friendly
     :return: A simple CNN model
     """
     inputs = keras.Input(shape=(img_rows, img_cols, 3))
@@ -113,6 +113,39 @@ def create_simple_model():
     return model
 
 
+def create_model():
+    inputs = keras.Input(shape=(img_rows, img_cols, 3))
+    x1 = Conv2D(30, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal')(inputs)
+    x2 = Conv2D(40, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal')(x1)
+    x3 = Conv2D(120, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal')(x2)
+    x4 = Conv2D(120, (9, 9), padding='same', activation='relu', kernel_initializer='he_normal')(x3)
+    x5 = Conv2D(40, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal')(x4)
+    x6 = Conv2D(40, (9, 9), padding='same', activation='relu', kernel_initializer='he_normal')(x5)
+    x7 = Conv2D(20, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal')(x6)
+    x8 = Conv2D(1, (1, 1), padding='same', activation='relu', kernel_initializer='he_normal')(x7)
+
+    model = keras.Model(inputs, x8)
+    opt = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+    model.compile(loss=logloss, optimizer=opt, metrics=[accuracy])
+    return model
+
+def logloss(y_true, y_pred):
+    """
+    Custom loss function
+    """
+    return keras.backend.mean(keras.backend.square(y_pred - y_true), axis=-1)
+
+
+def accuracy(y_true, y_pred):
+    """
+    Custom accuracy function
+    """
+    true_label = keras.backend.round(y_true)
+    pred_label = keras.backend.round(y_pred)
+
+    return keras.backend.mean(keras.backend.equal(true_label, pred_label))
+
+
 def get_prediction(model, x_test):
     """
     Does keras.prediction with the testing data.
@@ -125,3 +158,7 @@ def get_prediction(model, x_test):
         x_test.reshape(1, x_test.shape[0], x_test.shape[1], x_test.shape[2])
     p = model.predict(x_test, batch_size=2, verbose=1)
     return p
+
+
+m=create_model()
+m.summary()
