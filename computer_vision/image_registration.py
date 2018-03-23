@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.linalg import solve
 import random
+import cv2
+import paths
 
 
 def camera_transform(T, U_camera):
@@ -96,7 +98,7 @@ def ransac_inliers(lpoints, rpoints, threshold):
     N = len(lpoints)
     new_lpoints = []
     new_rpoints = []
-    loop_length = 10000 + 500 * N
+    loop_length = 100 + 50 * N
     all_loss = []
 
     for i in range(0, loop_length):
@@ -166,3 +168,32 @@ def least_square_solver(lpoints, rpoints, threshold):
     A = np.array([[theta[0], theta[1]], [theta[3], theta[4]]])
     t = np.array([theta[2], theta[5]])
     return A, t
+
+
+def find_image_transformation(chess=True):
+    """
+    Takes two chessboard images, left and right, and finds the corner of the chessboard. These are then used for
+    the least_square_solver to find the transformation matrix
+    :param chess: If the function shall create chessboard corner points
+    :return: transformation matrix and translation vector
+    """
+    if chess:
+        left_chess = cv2.imread(paths.left_chessboard)
+        right_chess = cv2.imread(paths.right_chessboard)
+        left_chess = cv2.cvtColor(left_chess, cv2.COLOR_BGR2GRAY)
+        right_chess = cv2.cvtColor(right_chess, cv2.COLOR_BGR2GRAY)
+
+        _, corners_left = cv2.findChessboardCorners(left_chess, (22, 16), None)
+        _, corners_right = cv2.findChessboardCorners(right_chess, (22, 16), None)
+        if len(corners_left) == len(corners_right):
+            corners_left = [cl[0] for cl in corners_left]
+            corners_right = [cr[0] for cr in corners_right]
+            A, t = least_square_solver(corners_left, corners_right, 100)
+            return A, t
+        else:
+            print('Different amount of chessboard points')
+    else:
+        corners_left = np.genfromtxt('lpoints.txt')
+        corners_right = np.genfromtxt('rpoints.txt')
+        A, t = least_square_solver(corners_left, corners_right, 100)
+        return A, t
