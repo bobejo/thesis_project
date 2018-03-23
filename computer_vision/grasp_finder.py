@@ -39,7 +39,7 @@ def blob_detector(img):
     :param img: Binary dilated image
     :return: The keypoints for the blobs
     """
-    # TODO Fix settings
+    #
     # Settings for blobdetector
     params = cv2.SimpleBlobDetector_Params()
     params.filterByCircularity = True
@@ -99,71 +99,6 @@ def featurematching_coordinates(limg, rimg, threshold=10):
     rpoints = [kp2[mat[0].trainIdx].pt for mat in good]
 
     return lpoints, rpoints
-
-
-def find_contact_points(img, center):
-    """
-    Finds the two contact points for the gripper.
-    If one point is found it stops looking at that side.
-
-    :param img: The binary dilated image as numpy
-    :param center: The center of the previously extracted blob
-    :return: The two contacts points
-    """
-
-    contacts = []
-    ind = 0
-    removed = []
-
-    for i in range(1, 10):
-        if len(contacts) > 1:
-            return contacts
-
-        combinations = create_square(i)
-
-        if ind:
-            new_ind = ind * 2
-            removed = np.arange(new_ind - i * 3 - 1, new_ind + i * 3 + 1)
-
-        combinations = [i for j, i in enumerate(combinations) if j not in removed]
-
-        for w, h in combinations:
-            coord = (center[0] + w, center[1] + h)
-
-            if img[coord[1]][coord[0]] == 0:
-                contacts.append((coord[0], coord[1]))
-                ind = combinations.index((w, h))
-                break
-
-    return None
-
-
-def create_square(size):
-    """
-    Creates a square of coordinates around (0,0) used for find_contact_points
-
-    example of size 1
-
-    [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1)]
-
-    :param size: The length from the center (0,0)
-    :return: List of coordinates starting at (-size,-size)
-    """
-    top = []
-    right = []
-    bottom = []
-    left = []
-    aranged = np.arange(-size, size + 1)
-    for i in aranged:
-        top = top + [(-size, i)]
-        bottom = bottom + [(size, i)]
-        right = right + [(i, size)]
-        left = left + [(i, -size)]
-    bottom.reverse()
-    left.reverse()
-    square = top + right[1:] + bottom[1:] + left[1:-1]
-
-    return square
 
 
 def triangulate_point(lpoint, rpoint, left_cm, right_cm):
