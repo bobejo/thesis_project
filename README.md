@@ -36,7 +36,13 @@ The position of the grasping point is found in the following way:
 5. The corresponding point is found in the second image.
 6. Triangulation is used to find the 3D coordinate.
 7. The coordinate is transformed to base frame and sent, together with the angle.
+
 ## ROS
+
+1. The manipulator can move to desired positions (bin zone and table zone) using publisher and subscriber on ROS.
+2. A new frame is created for the stereo camera with the same position in reality in xyz directions. 
+3. The position of a point on the object is transformed from camera frame into base frame and then to gripper frame using broadcaster and listener on ROS. (it matches with position from computer vision part).
+4. The s_model 3 finger gripper is used and can operate in differnt modes to grasp different objects with different geometries.
 
 ## Authors
 
