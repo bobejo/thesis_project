@@ -1,4 +1,4 @@
-28% Run the matlab camera calibrator from the computer vision toolbox
+% Run the matlab camera calibrator from the computer vision toolbox
 % Information how to use the tool can be found here https://mathworks.com/help/vision/ug/stereo-camera-calibrator-app.html
 
 stereoCameraCalibrator
@@ -7,10 +7,9 @@ stereoCameraCalibrator
 %  Saves the matrices as .txt
 clc
 R1=diag([1,1,1]);
-R2=stereoParams.RotationOfCamera2
-%R2(3,3)=R2(3,3)*-1
+R2=stereoParams.RotationOfCamera2;
 t1=[0 0 0]';
-t2=stereoParams.TranslationOfCamera2';
+t2=stereoParams.TranslationOfCamera2'-[0;0;35];
 
 R2b=[R2;0 0 0];
 R1b=[R1;0 0 0];
