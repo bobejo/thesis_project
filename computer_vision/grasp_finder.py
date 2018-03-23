@@ -18,6 +18,7 @@ def contour_detector(img):
     """
     _, contours, _ = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     l_area = 0
+    # Take the largest contour
     for c in contours:
         area = cv2.contourArea(c, False)
         if area > l_area:
@@ -25,9 +26,11 @@ def contour_detector(img):
             cont = c
 
     cv2.drawContours(img, cont, -1, 128, 6)
+    # The coordinates of the center of the contour
     M = cv2.moments(cont)
     cx = int(M['m10'] / M['m00'])
     cy = int(M['m01'] / M['m00'])
+    # Try to fit an ellipse inside the contour and give the angle of the largest one
     _, _, angle = cv2.fitEllipse(cont)
     return img, (cx, cy), angle
 
