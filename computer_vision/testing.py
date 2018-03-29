@@ -109,7 +109,6 @@ def test_triangulation():
         ax_right.scatter(rpt[i][0], rpt[i][1], linewidths=10)
         ax.scatter(tri[0], tri[1], tri[2], marker=',', linewidths=15)
         ax1.scatter(tri_base[0], tri_base[1], tri_base[2], marker=',', linewidths=15)
-        print(tri_base)
 
     # Plot the cameras and baseframe
     """
