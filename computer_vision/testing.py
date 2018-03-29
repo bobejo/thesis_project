@@ -1,12 +1,15 @@
+# import os
+# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 import numpy as np
 import cv2
+
 import cnn
 import paths
 import img_numpy
 import image_registration as tf
 import grasp_finder as gf
 import image_manipulation as iseg
-
+import global_variables as gv
 from matplotlib import pyplot as plt
 from keras.models import load_model
 from Loss import LogLoss, accuracy
@@ -66,52 +69,65 @@ def test_triangulation():
 
     """
 
-    fig = plt.figure()
-    fig1 = plt.figure()
-    fig2 = plt.figure()
-    fig3 = plt.figure()
+    # Create figures
+    fig = plt.figure('Camera frame')
+    fig1 = plt.figure('Base frame')
+    fig_right = plt.figure('Right camera')
+    fig_left = plt.figure('Left camera')
     ax = fig.add_subplot(111, projection='3d')
     ax1 = fig1.add_subplot(111, projection='3d')
-    ax2 = fig2.add_subplot(111)
-    ax3 = fig3.add_subplot(111)
+    ax_right = fig_right.add_subplot(111)
+    ax_left = fig_left.add_subplot(111)
 
-    lcm = np.genfromtxt('cameraMatrix\\lcm.txt')
-    rcm = np.genfromtxt('cameraMatrix\\rcm.txt')
-    # lcm = np.genfromtxt('lcm_matlab.txt')
-    # rcm = np.genfromtxt('rcm_matlab.txt')
 
-    lpt = [tuple(lp) for lp in np.load('C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\left2.npy').tolist()]
-    rpt = [tuple(lp) for lp in np.load('C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\right2.npy').tolist()]
-    lpt = lpt[:24]
-    rpt = rpt[:24]
-    img = cv2.imread(paths.test_path_left2)
-    img2 = cv2.imread(paths.test_path_right2)
-    T = np.array([[0, 1, 0, -900], [1, 0, 0, -240], [0, 0, 1, 1910]])
+    # Load camera matrices and points
+    lcm = np.genfromtxt('lcm_vlh2.txt')
+    rcm = np.genfromtxt('rcm_vlh2.txt')
+
+    # When using function  choose_points
+    #lpt = [tuple(lp) for lp in np.load('C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\left2.npy').tolist()]
+    #rpt = [tuple(lp) for lp in np.load('C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\right2.npy').tolist()]
+
+    lpt = np.genfromtxt('lpoints3.txt')
+
+    # Choose if right points should be true points or transformed
+    rpt = np.genfromtxt('rpoints3.txt')
+    # rpt = [tf.affine_transformation(gv.A, gv.t, l) for l in lpt]
+
+    # Load and undistort the images
+    img_left = cv2.imread(paths.left_chessboard2)
+    img_right = cv2.imread(paths.right_chessboard2)
+    undistimg_left = cv2.undistort(img_left, gv.K1, gv.d1, None)
+    undistimg_right = cv2.undistort(img_right, gv.K2, gv.d2, None)
+
     for i in range(0, len(lpt)):
+        # Triangulate and transform to baseframe
         tri = gf.triangulate_point(lpt[i], rpt[i], rcm, lcm)
-        tri2 = tf.camera_transform(T, tri)
+        tri_base = tf.base_transform(gv.T, tri)
 
-        ax3.scatter(lpt[i][0], lpt[i][1], linewidths=10)
-        ax2.scatter(rpt[i][0], rpt[i][1], linewidths=10)
-        ax.scatter(tri[0] + 600, tri[1] + 400, tri[2], marker=',', linewidths=15)
-        ax1.scatter(tri2[0] + 600, tri2[1] + 535, tri2[2], marker=',', linewidths=15)
+        ax_left.scatter(lpt[i][0], lpt[i][1], linewidths=10)
+        ax_right.scatter(rpt[i][0], rpt[i][1], linewidths=10)
+        ax.scatter(tri[0], tri[1], tri[2], marker=',', linewidths=15)
+        ax1.scatter(tri_base[0], tri_base[1], tri_base[2], marker=',', linewidths=15)
+        print(tri_base)
 
+    # Plot the cameras and baseframe
+    """
     camera1 = np.linalg.lstsq(lcm[:3, :3], lcm[:, 3])
     camera2 = np.linalg.lstsq(rcm[:3, :3], rcm[:, 3])
+    camera1base = tf.base_transform(T, np.vstack(camera1[0]))
+    camera2base = tf.base_transform(T, np.vstack(camera2[0]))
+    ax.scatter(camera1[0][0], camera1[0][1], camera1[0][2], c='k', marker='H', linewidths=20)
+    ax.scatter(camera2[0][0], camera2[0][1], camera2[0][2], c='k', marker='H', linewidths=20)
+    ax1.scatter(0, 0, 0, c='k', marker='H', linewidths=20)
+    ax1.scatter(camera1base[0]+250, camera1base[1], camera1base[2], c='k', marker='H', linewidths=20)
+    ax1.scatter(camera2base[0]+250, camera2base[1], camera2base[2], c='k', marker='H', linewidths=20)
+    """
 
-    camera1base = tf.camera_transform(T, np.vstack(camera1[0]))
-    camera2base = tf.camera_transform(T, np.vstack(camera2[0]))
-    print(camera1base)
-    print(camera2base)
-    #ax.scatter(camera1[0][0], camera1[0][1], camera1[0][2], c='k', marker='H', linewidths=20)
-    #ax.scatter(camera2[0][0], camera2[0][1], camera2[0][2], c='k', marker='H', linewidths=20)
-    #ax1.scatter(0, 0, 0, c='k', marker='H', linewidths=20)
-    #ax1.scatter(camera1base[0], camera1base[1], camera1base[2], c='k', marker='H', linewidths=20)
-    #ax1.scatter(camera2base[0], camera2base[1], camera2base[2], c='k', marker='H', linewidths=20)
-    ax3.imshow(img2)
-    ax2.imshow(img)
-    ax2.set_xlabel('X Label')
-    ax2.set_ylabel('Y Label')
+    ax_left.imshow(undistimg_left)
+    ax_right.imshow(undistimg_right)
+    ax_right.set_xlabel('X Label')
+    ax_right.set_ylabel('Y Label')
     ax.set_xlabel('X Label')
     ax.set_ylabel('Y Label')
     ax.set_zlabel('Z Label')
@@ -140,9 +156,11 @@ def test_prediction():
     for i in range(0, 100):
         x, target = next(test_generator)
         p = cnn.get_prediction(model, x)
+        bin = iseg.binary_image(p[0], 0.25)
         cv2.imshow('input', x[0])
         cv2.imshow('target', target[0])
         cv2.imshow('output', p[0])
+        cv2.imshow('Binary', bin)
         cv2.waitKey(0)
 
 
@@ -153,20 +171,19 @@ def test_transformation():
     Plots the true coordinate in the left image and the transformed in the right image.
     """
     # The path for images taken with both cameras at the same time
-    test_path_right = paths.test_path_right
-    test_path_left = paths.test_path_left
-    points = [(400, 150), (300, 150), (150, 300), (150, 100), (100, 150), (225, 255), (320, 50), (100, 100), (500, 200),
-              (75, 75), (350, 300)]
-    [lpt, rpt] = gf.featurematching_coordinates(test_path_left, test_path_right, 30)
-    A, t = tf.least_square_solver(lpt, rpt, 20)
+    test_path_right = paths.save_path + '\\right\\rightcalibration09_38_49.jpg'
+    test_path_left = paths.save_path + '\\left\\leftcalibration09_38_49.jpg'
+    lpt = np.genfromtxt('lpoints.txt')
+    rpt = np.genfromtxt('rpoints.txt')
     print(len(lpt))
+    A, t = tf.least_square_solver(lpt, rpt, 100)
+
     for i in range(0, len(lpt)):
         img1 = cv2.imread(test_path_left, 0)
         img2 = cv2.imread(test_path_right, 0)
 
         left_points = lpt[i]
         right_points = tf.affine_transformation(A, t, left_points)
-        right_points2 = tf.affine_transformation(A, t, points[i])
 
         print('==========================')
         print('True left points ' + str(left_points))
@@ -176,12 +193,8 @@ def test_transformation():
 
         left_points = int(left_points[0]), int(left_points[1])
         right_points = int(right_points[0]), int(right_points[1])
-        right_points2 = int(right_points2[0]), int(right_points2[1])
-
         cv2.circle(img1, left_points, 3, (0, 0, 0), 5)
         cv2.circle(img2, right_points, 3, (0, 0, 0), 5)
-        cv2.circle(img1, points[i], 3, (255, 0, 0), 5)
-        cv2.circle(img2, right_points2, 3, (255, 0, 0), 5)
 
         cv2.imshow('left', img1)
         cv2.imshow('right', img2)
@@ -201,10 +214,11 @@ def test_contour():
         (inp, target) = next(test_generator)
 
         p = cnn.get_prediction(model, inp)
-        bi = iseg.binary_image(p[0], 0.21)
+        bi = iseg.binary_image(p[0], 0.10)
         di = iseg.dilate_image(bi, 5)
-        img, mom,ang = gf.contour_detector(di)
-        print('Angle: ',ang)
+        img, mom, ang = gf.contour_detector(di)
+        print('Angle: ', ang)
+        print('Point', mom)
         cv2.imshow('cont', img)
         cv2.circle(inp[0], mom, 3, (255, 0, 0), 3)
         cv2.imshow('inp', inp[0])
@@ -258,6 +272,9 @@ def test_generation():
     for i in range(0, 10):
         fig, axs = plt.subplots(1, 2, figsize=(20, 20))
         (inp, target) = next(test_generator)
+        cv2.imshow('inp', inp[0])
+        cv2.imshow('target', target[0])
+        cv2.waitKey(0)
         axs[0].imshow(inp[0])
         axs[1].imshow(target[0].reshape(550, 400), cmap='gray')
         plt.tight_layout()
@@ -292,10 +309,12 @@ def test_contact_points():
 
 # test_generation()
 # test_transformation()
-test_contour()
+# test_contour()
 # test_contact_points()
 # test_blobdetection()
 # test_prediction()
 
-#test_triangulation()
+test_triangulation()
 # test_cropping()
+# lpt = np.genfromtxt('lpoints3.txt')
+# tf.projective_transformation(gv.H,lpt[0])
