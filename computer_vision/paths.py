@@ -33,8 +33,6 @@ right_matrix_path =project_path+ '\\CameraMatrix\\rightMatrix.npy'
 test_path_right = project_path+'\\images\\Training_data\\test\\inp\\right\\right\\rightpipe08_41_37_2.jpg'
 test_path_left = project_path+'\\images\\Training_data\\test\\inp\\left\\left\\leftpipe08_41_37_2.jpg'
 
-# Snap_pic
-# Folder where the images will be placed
 
 # Affine transformation
 # Path to left and right images with chessboard
