@@ -1,50 +1,47 @@
 """
 Contains paths to the testing images and training images, the cnnmodel and camera matrices
-
+Specify the path for the computer_vision folder
 """
+# Path to computer_vision folder
+project_path = 'C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\computer_vision\\'
+
+
+
 ## CNN
 # Path where the training images are. Input images and target images
-x_train_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\input_data'
-y_train_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\target_data'
+x_train_path = project_path+'\\images\\Training_data\\input_data'
+y_train_path = project_path+'\\Training_data\\target_data'
 
 # The testing images used for real time validation
-x_test_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\input'
-y_test_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\target'
+x_test_path = project_path + '\\images\\Training_data\\test\\input'
+y_test_path = project_path + '\\images\\Training_data\\test\\target'
 
 # The verification images. Make sure that these are not used for training.
-x_verification_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Verification_data\\x_test\\test'
-y_verification_path = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\y_test\\test'
+x_verification_path =project_path + '\\images\\Verification_data\\x_test\\test'
+y_verification_path = project_path + '\\images\\Training_data\\y_test\\test'
 
 # The path to the model
-model_path = 'C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\computer_vision\\models\\simple_model.h5'
+model_path = project_path+'\\models\\simple_model.h5'
 
 ## Triangulation
 # The path to the camera matrices
-left_matrix_path = 'CameraMatrix\\leftMatrix.npy'
-right_matrix_path = 'CameraMatrix\\rightMatrix.npy'
+left_matrix_path = project_path+'\\CameraMatrix\\leftMatrix.npy'
+right_matrix_path =project_path+ '\\CameraMatrix\\rightMatrix.npy'
 
 ## Testing
 # Used for affine transformation testing
-test_path_right = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\inp\\right\\right\\rightpipe08_41_37_2.jpg'
-test_path_left = 'C:\\Users\\Samuel\\GoogleDrive\Master\Python\\thesis_project\\computer_vision\\images\\Training_data\\test\\inp\\left\\left\\leftpipe08_41_37_2.jpg'
-
-# Triangulation testing
-test_path_right1 = 'C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\croppedleft_pipe08_18_23.jpg'
-test_path_left1 = 'C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\croppedright_pipe08_18_23.jpg'
-test_path_right2 = 'C:\\Users\\Samuel\\Desktop\\pipes\\left\\images\\left_pipe08_18_23.jpg'
-test_path_left2 = 'C:\\Users\\Samuel\\Desktop\\pipes\\right\\images\\right_pipe08_18_23.jpg'
+test_path_right = project_path+'\\images\\Training_data\\test\\inp\\right\\right\\rightpipe08_41_37_2.jpg'
+test_path_left = project_path+'\\images\\Training_data\\test\\inp\\left\\left\\leftpipe08_41_37_2.jpg'
 
 # Snap_pic
 # Folder where the images will be placed
-save_path = 'C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\\computer_vision\\images\\main'
 
 # Affine transformation
 # Path to left and right images with chessboard
 # Gives points that will be used in the ransac leastsquare solver
-left_chessboard = save_path + '\\left\\leftcalibration09_38_49.jpg'
-right_chessboard = save_path + '\\right\\rightcalibration09_38_49.jpg'
 
-# Cropping
-# VLH
-lcrop = [(200, 750), (180, 550)]
-rcrop = [(125, 675), (530, 900)]
+left_chessboard =project_path+ 'images\\Chessboard_images\\leftcalibration07_16_21.jpg'
+right_chessboard =project_path + 'images\\Chessboard_images\\rightcalibration07_16_21.jpg'
+left_chessboard2 =project_path +'images\\Chessboard_images\\leftcalibration08_05_44.jpg'
+right_chessboard2 =project_path +'images\\Chessboard_images\\rightcalibration08_05_44.jpg'
+
