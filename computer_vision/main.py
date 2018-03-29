@@ -12,7 +12,7 @@ import numpy as np
 
 def find_3D_point():
     """
-    Finds the best grasping point and angle. Requires the relationship between left and right images
+    Finds the best grasping point and angle of it.
     :return: The 3D gripping point in robot base frame and the gripping angle.
     """
     "Take the images and crop them"
@@ -31,7 +31,8 @@ def find_3D_point():
     "Find the 2d gripping point and angle for the left image"
     _, gripping_point_left, gripping_angle = gf.contour_detector(p)
 
-    "Find the corresponding point of the right camera"
+    "Find the corresponding point of the right camera. Requires the matrix A and t from "
+    "image_registration.find_image_transformation()"
 
     gripping_point_right = ir.affine_transformation(gv.A, gv.t, gripping_point_left)
 
@@ -48,3 +49,7 @@ def find_3D_point():
     gripping_point_base = ir.camera_transform(gv.T, tri_camera)
 
     return gripping_point_base, gripping_angle
+
+
+if __name__ == "__main__":
+    find_3D_point()
