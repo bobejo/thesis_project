@@ -10,19 +10,19 @@ project_path = 'C:\\Users\\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\
 ## CNN
 # Path where the training images are. Input images and target images
 x_train_path = project_path+'\\images\\Training_data\\input_data'
-y_train_path = project_path+'\\Training_data\\target_data'
+y_train_path = project_path+'\\images\\Training_data\\target_data'
 
 # The testing images used for real time validation
-x_test_path = project_path + '\\images\\Training_data\\test\\input'
-y_test_path = project_path + '\\images\\Training_data\\test\\target'
+x_validation_path = project_path + '\\images\\Validation_data\\input_data'
+y_validation_path = project_path + '\\images\\Validation_data\\target_data'
 
 # The verification images. Make sure that these are not used for training.
 x_verification_path =project_path + '\\images\\Verification_data\\x_test\\test'
-y_verification_path = project_path + '\\images\\Training_data\\y_test\\test'
+y_verification_path = project_path + '\\images\\Verification_data\\y_test\\test'
 
 # The path to the model
-model_path = project_path+'\\models\\simple_model.h5'
-
+model_path = project_path+'\\models\\simp_model.h5'
+simple_model_path = project_path+'\\models\\simple_model.h5'
 ## Triangulation
 # The path to the camera matrices
 left_matrix_path = project_path+'\\CameraMatrix\\leftMatrix.npy'
