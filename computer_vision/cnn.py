@@ -9,6 +9,7 @@ import img_numpy
 from Loss import logloss, accuracy
 from vis_activations import display_activations, get_activations
 from keras import backend as K
+from keras.layers.normalization import BatchNormalization
 from keras.layers import Dense, Dropout, Flatten, Activation, Reshape
 from keras.layers import Conv2D
 from keras.models import load_model
@@ -90,7 +91,7 @@ def train_model(x_train_path, y_train_path, x_test_path, y_test_path, batch_size
 
     model.fit_generator(train_generator, steps_per_epoch=steps_per_epoch, epochs=training_epochs,
                         validation_data=validation_generator,
-                        validation_steps=20 / batch_size)  # Number of images used for validation
+                        validation_steps=50)  # Number of images used for validation
 
     model.save('models\\simp_model.h5')
     print('Model saved')
@@ -102,16 +103,22 @@ def create_simple_model():
     Memory friendly
     :return: A simple CNN model
     """
-    inputs = keras.Input(shape=(500, 350, 3))
-    x1 = Conv2D(30, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal')(inputs)
-    x2 = Conv2D(20, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal')(x1)
-    x3 = Conv2D(20, (9, 9), padding='same', activation='relu', kernel_initializer='he_normal')(x2)
-    x4 = Conv2D(20, (1, 1), padding='same', activation='relu', kernel_initializer='he_normal')(x3)
-    x5 = Conv2D(20, (1, 1), padding='same', activation='relu', kernel_initializer='he_normal')(x4)
-    x6_input = keras.layers.concatenate([x2, x5], axis=3)
+    inputs = keras.Input(shape=(550, 400, 3))
+    x1 = BatchNormalization()(inputs)
+    x1 = Conv2D(30, (3, 3), padding='same', activation='relu')(x1)
+    x2 = BatchNormalization()(x1)
+    x2 = Conv2D(20, (3, 3), padding='same', activation='relu')(x2)
+    x3 = BatchNormalization()(x2)
+    x3 = Conv2D(20, (9, 9), padding='same', activation='relu')(x3)
+    x4 = BatchNormalization()(x3)
+    x4 = Conv2D(20, (1, 1), padding='same', activation='relu')(x4)
+    x5 = BatchNormalization()(x4)
+    x5 = Conv2D(20, (1, 1), padding='same', activation='relu')(x5)
+    x6 = BatchNormalization()(x5)
+    x6_input = keras.layers.concatenate([x2, x6], axis=3)
     x7 = Conv2D(1, (1, 1), padding='same', activation='sigmoid')(x6_input)
     model = keras.Model(inputs, x7)
-    opt = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+    opt = keras.optimizers.SGD()
     model.compile(loss='mse', optimizer=opt)
 
     return model
@@ -192,7 +199,7 @@ def train_model2(x_train_path, y_train_path, x_validation_path, y_validation_pat
         for i in range(0, 150):
             ind = random.randint(0, len(x_train_folder))
             x_train[i] = cv2.imread(x_train_folder[ind])
-            y_train[i] = cv2.imread(y_train_folder[ind],cv2.IMREAD_GRAYSCALE).reshape(500,350,1)
+            y_train[i] = cv2.imread(y_train_folder[ind], cv2.IMREAD_GRAYSCALE).reshape(500, 350, 1)
             del x_train_folder[ind]
             del y_train_folder[ind]
             x_train = x_train.astype('float32')
@@ -214,4 +221,5 @@ def train_model2(x_train_path, y_train_path, x_validation_path, y_validation_pat
     print('Model saved')
 
 
-train_model2(paths.x_train_path, paths.y_train_path, paths.x_validation_path, paths.y_validation_path, 8, 20, 10)
+#train_model(paths.x_train_path, paths.y_train_path, paths.x_validation_path, paths.y_validation_path, 2, 50, 2)
+# train_model2(paths.x_train_path, paths.y_train_path, paths.x_validation_path, paths.y_validation_path, 8, 20, 10)
