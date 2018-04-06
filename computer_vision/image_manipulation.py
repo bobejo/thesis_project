@@ -1,6 +1,8 @@
 import numpy as np
 import glob
 import cv2
+import paths
+import global_variables as gv
 
 """
 U_pipe
@@ -13,7 +15,7 @@ vlh right 125:675, 530:900
 """
 
 
-def crop_images(path,lcrop,rcrop):
+def crop_images(path, lcrop, rcrop):
     """
     Takes multiple images and crops to each blue box.
     Cropping sizes are chosen manually
@@ -23,22 +25,22 @@ def crop_images(path,lcrop,rcrop):
     :param rcrop: The cropping size of right camera [(r1,r2),(c1,c2)]
     """
     image_path_list = glob.glob(path)
-
     for image_path in image_path_list:
         img = cv2.imread(image_path, 1)
         a = image_path.split("images\\")
 
         if image_path.find('left') >= 0:
             cropped_image = img[lcrop[0][0]:lcrop[0][1], lcrop[1][0]:lcrop[1][1]]  # Choose these rows,column
-            image_path = a[0] + 'images\\' + 'cropped' + a[1]
+            image_path = a[0] + 'images\\' + 'cropped\\cropped\\' + a[1]
             cv2.imwrite(image_path, cropped_image)
 
         elif image_path.find('right') >= 0:
             cropped_image = img[rcrop[0][0]:rcrop[0][1], rcrop[1][0]:rcrop[1][1]]  # Choose these rows,column
-            image_path = a[0] + 'images\\' + 'cropped' + a[1]
+            image_path = a[0] + 'images\\' + 'cropped\\cropped\\' + a[1]
             cv2.imwrite(image_path, cropped_image)
         else:
             print("File: " + a[1] + " skipped")
+
 
 def binary_image(img, threshold):
     """
@@ -82,4 +84,5 @@ def image_segmentation(img, threshold, size):
     return dim
 
 
-#crop_images('C:\\Users\Samuel\\GoogleDrive\\Master\\Python\\thesis_project\\camera_calibration\\images\\*.jpg')
+#pt = paths.save_path + '\\*.jpg'
+#crop_images(pt, gv.lcrop, gv.rcrop)
