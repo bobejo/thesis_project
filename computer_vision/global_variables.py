@@ -3,10 +3,10 @@ import numpy as np
 # Cropping
 # VLH   (height,width)
 lcrop = [(270, 850), (120, 540)]
-rcrop = [(150, 730), (500, 920)]
+rcrop = [(150, 730), (650, 1070)]
 
 # Binary threshold
-threshold = 0.09
+threshold = 0.12
 # Dilation size
 dilation_size = 5
 
@@ -14,13 +14,15 @@ dilation_size = 5
 H = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 # Rotation matrix and translation
 # Use image_registration.find_image_transformation()
+#right to left
+"""
+A = np.array([[1.00193027, 0.01751188], [-0.04496408, 1.00595537]])
+t = np.array([-547.21745223, -112.81193411])
+"""
+# Chosen with choose_points left to right
+A = np.array([[0.99426429, -0.02191584], [0.04492097, 0.99363468]])
+t = np.array([510.43277927, -88.79672629])
 
-A = np.array([[0.97784193, -0.09062795], [0.08710987, 0.99024522]])
-t = np.array([474.03661485, -140.02826493])
-"""
-A = np.array([[0.94771798, -0.0885531], [0.08632566, 0.9718003]])
-t = np.array([529.9793449, -131.49855684])
-"""
 # Transformation matrix between camera frame and base frame
 T = np.array([[-1, 0, 0, 0], [0, 1, 0, -682], [0, 0, 1, 833]])
 
