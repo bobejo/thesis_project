@@ -6,9 +6,9 @@ lcrop = [(270, 850), (120, 540)]
 rcrop = [(150, 730), (650, 1070)]
 
 # Binary threshold
-threshold = 0.12
+threshold = 0.4
 # Dilation size
-dilation_size = 5
+dilation_size = 2
 
 # Projective
 H = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
@@ -21,7 +21,7 @@ t = np.array([-547.21745223, -112.81193411])
 """
 # Chosen with choose_points left to right
 A = np.array([[0.99426429, -0.02191584], [0.04492097, 0.99363468]])
-t = np.array([510.43277927, -88.79672629])
+t = np.array([495.43277927, -88.79672629])
 
 # Transformation matrix between camera frame and base frame
 T = np.array([[-1, 0, 0, 0], [0, 1, 0, -682], [0, 0, 1, 833]])
