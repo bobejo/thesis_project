@@ -37,12 +37,9 @@ def contour_detector(img):
     cx = int(M['m10'] / M['m00'])
     cy = int(M['m01'] / M['m00'])
     # Try to fit an ellipse inside the contour and give the angle of the largest one
-    (x, y), _, angle = cv2.fitEllipse(cont)
-    print(x, y)
-    print(cx, cy)
-    x=int(x)
-    y = int(y)
-    return img, (cx, cy), angle, cont, (x, y)
+    _, _, angle = cv2.fitEllipse(cont)
+
+    return img, (cx, cy), angle, cont
 
 
 def blob_detector(img):
