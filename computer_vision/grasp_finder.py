@@ -4,7 +4,7 @@ import numpy as np;
 # import cnn
 # from img_numpy import imgs2numpy
 # from Loss import LogLoss, accuracy
-# from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt
 from scipy import ndimage
 import operator
 
@@ -16,23 +16,33 @@ def contour_detector(img):
     :param img: A binary dilated numpy image
     :return: The input image with the contour, the centroid of this contour and the angle of the contour.
     """
+
     _, contours, _ = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     l_area = 0
+    length_contour = 0
     # Take the largest contour
+    if not contours:
+        print('Error No shapes found!')
+        return img
     for c in contours:
-        area = cv2.contourArea(c, False)
-        if area > l_area:
-            l_area = area
+        length = cv2.arcLength(c, True)
+        if length > length_contour:
+            length_contour = length
             cont = c
 
-    cv2.drawContours(img, cont, -1, 128, 6)
-    # The coordinates of the center of the contour
+    cv2.drawContours(img, cont, -1, 128, 10)
+
+    # The coordinates of the center of the contour from the moments.
     M = cv2.moments(cont)
     cx = int(M['m10'] / M['m00'])
     cy = int(M['m01'] / M['m00'])
     # Try to fit an ellipse inside the contour and give the angle of the largest one
-    _, _, angle = cv2.fitEllipse(cont)
-    return img, (cx, cy), angle
+    (x, y), _, angle = cv2.fitEllipse(cont)
+    print(x, y)
+    print(cx, cy)
+    x=int(x)
+    y = int(y)
+    return img, (cx, cy), angle, cont, (x, y)
 
 
 def blob_detector(img):
@@ -98,6 +108,8 @@ def featurematching_coordinates(limg, rimg, threshold=10):
 
     good = sorted(good, key=lambda x: x[0].distance)
 
+    img3 = cv2.drawMatchesKnn(limg, kp1, rimg, kp2, good, None, flags=2)
+    plt.imshow(img3), plt.show()
     lpoints = [kp1[mat[0].queryIdx].pt for mat in good]
     rpoints = [kp2[mat[0].trainIdx].pt for mat in good]
 
@@ -112,7 +124,7 @@ def triangulate_point(lpoint, rpoint, left_cm, right_cm):
     :param rpoint: The pixels of the right image
     :param left_cm: The camera matrix for the left camera
     :param right_cm: The camera matrix for the right camera
-    :return: 3D point in global coordinates
+    :return: 3D point in left camera frame
     """
 
     theta = cv2.triangulatePoints(left_cm, right_cm, lpoint, rpoint)
