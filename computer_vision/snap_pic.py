@@ -13,12 +13,13 @@ def snap_pic(name, save_path):
     :param save_path: The folder where the images should be placed.
     """
     t = get_time()
-    os.system(
-        'wget http://admin:admin@192.168.1.138/dms?nowprofileid=1 -O' '' + save_path + "\\left" + name + t + ".jpg")
+    #os.system('wget http://admin:admin@192.168.1.138/dms?nowprofileid=1 -O' '' + save_path + "\\left" + name + t + ".jpg")
+    os.system('wget http://admin:admin@192.168.1.138/dms?nowprofileid=1 -O' '' + save_path + "\\left.jpg")
     print("Picture 1 left is saved")
-    os.system('wget http://admin:@192.168.1.144/dms?nowprofileid=1 -O' '' + save_path + "\\right" + name + t + ".jpg")
+    #os.system('wget http://admin:@192.168.1.144/dms?nowprofileid=1 -O' '' + save_path + "\\right" + name + t + ".jpg")
+    os.system('wget http://admin:@192.168.1.144/dms?nowprofileid=1 -O' '' + save_path + "\\right.jpg")
     print("Picture 1 right is saved")
-    return save_path + "\\left" + name + t + ".jpg", save_path + "\\right" + name + t + ".jpg"
+    return save_path + "\\left.jpg", save_path + "\\right.jpg"
 
 
 def get_time():
@@ -32,4 +33,4 @@ def get_time():
     return t[13:21]
 
 # Choose name of pipe
-#snap_pic("calibration", paths.save_path)
+#snap_pic("u_pipe", paths.save_path)
