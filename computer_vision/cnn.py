@@ -1,5 +1,5 @@
 from __future__ import print_function
-# import os
+import os
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 import glob
 import cv2
@@ -26,6 +26,18 @@ K.set_image_dim_ordering('tf')
 img_rows, img_cols = 550, 400
 
 
+def create_main_generator(input_path, row_size, col_size):
+    data_gen_args = dict(rescale=1. / 255)
+
+    input_datagen = ImageDataGenerator(**data_gen_args)
+    input_generator = input_datagen.flow_from_directory(
+        input_path,
+        class_mode=None,
+        batch_size=1,
+        target_size=(row_size, col_size))
+    return input_generator
+
+
 def create_generators(input_path, target_path, batch_size, row_size, col_size):
     """
     Creates a two generator with the training data (input images and target images) and returns a zipped generator.
@@ -41,7 +53,7 @@ def create_generators(input_path, target_path, batch_size, row_size, col_size):
 
     # The arguments
     data_gen_args = dict(rescale=1. / 255, horizontal_flip=True, vertical_flip=True, width_shift_range=0.03,
-                         height_shift_range=0.03)
+                         height_shift_range=0.03, channel_shift_range=0.)
 
     input_datagen = ImageDataGenerator(**data_gen_args)
     target_datagen = ImageDataGenerator(**data_gen_args)
@@ -88,12 +100,15 @@ def train_model(x_train_path, y_train_path, x_test_path, y_test_path, batch_size
     model = create_simple_model()
     train_generator = create_generators(x_train_path, y_train_path, batch_size, img_rows, img_cols)
     validation_generator = create_generators(x_test_path, y_test_path, batch_size, img_rows, img_cols)
-
+    saveclk = keras.callbacks.ModelCheckpoint('models\\clbkmodel.h5', monitor='val_loss', verbose=1,
+                                              save_best_only=True,
+                                              save_weights_only=False, mode='min', period=1)
+    clbk = [saveclk]
     model.fit_generator(train_generator, steps_per_epoch=steps_per_epoch, epochs=training_epochs,
-                        validation_data=validation_generator,
+                        validation_data=validation_generator, callbacks=clbk,
                         validation_steps=50)  # Number of images used for validation
 
-    model.save('models\\simp_model.h5')
+    # model.save('models\\simp_model.h5')
     print('Model saved')
 
 
@@ -125,37 +140,25 @@ def create_simple_model():
 
 
 def create_model():
-    inputs = keras.Input(shape=(img_rows, img_cols, 3))
-    x1 = Conv2D(30, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal')(inputs)
-    x2 = Conv2D(40, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal')(x1)
-    x3 = Conv2D(120, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal')(x2)
-    x4 = Conv2D(120, (9, 9), padding='same', activation='relu', kernel_initializer='he_normal')(x3)
-    x5 = Conv2D(40, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal')(x4)
-    x6 = Conv2D(40, (9, 9), padding='same', activation='relu', kernel_initializer='he_normal')(x5)
-    x7 = Conv2D(20, (3, 3), padding='same', activation='relu', kernel_initializer='he_normal')(x6)
-    x8 = Conv2D(1, (1, 1), padding='same', activation='relu', kernel_initializer='he_normal')(x7)
+    inputs = keras.Input(shape=(550, 400, 3))
+    x1 = BatchNormalization()(inputs)
+    x1 = Conv2D(30, (3, 3), padding='same', activation='relu')(x1)
+    x2 = BatchNormalization()(x1)
+    x2 = Conv2D(20, (3, 3), padding='same', activation='relu')(x2)
+    x3 = BatchNormalization()(x2)
+    x3 = Conv2D(20, (9, 9), padding='same', activation='relu')(x3)
+    x4 = BatchNormalization()(x3)
+    x4 = Conv2D(20, (1, 1), padding='same', activation='relu')(x4)
+    x5 = BatchNormalization()(x4)
+    x5 = Conv2D(20, (1, 1), padding='same', activation='relu')(x5)
+    x6 = BatchNormalization()(x5)
+    x6_input = keras.layers.concatenate([x2, x6], axis=3)
+    x7 = Conv2D(1, (1, 1), padding='same', activation='sigmoid')(x6_input)
+    model = keras.Model(inputs, x7)
+    opt = keras.optimizers.SGD()
+    model.compile(loss='mse', optimizer=opt)
 
-    model = keras.Model(inputs, x8)
-    opt = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
-    model.compile(loss=logloss, optimizer=opt, metrics=[accuracy])
     return model
-
-
-def logloss(y_true, y_pred):
-    """
-    Custom loss function
-    """
-    return keras.backend.mean(keras.backend.square((y_pred - y_true)), axis=-1)
-
-
-def accuracy(y_true, y_pred):
-    """
-    Custom accuracy function
-    """
-    true_label = keras.backend.round(y_true)
-    pred_label = keras.backend.round(y_pred)
-
-    return keras.backend.mean(keras.backend.equal(true_label, pred_label))
 
 
 def get_prediction(model, x_test):
@@ -171,55 +174,5 @@ def get_prediction(model, x_test):
     p = model.predict(x_test, batch_size=2, verbose=1)
     return p
 
+# train_model(paths.x_train_path, paths.y_train_path, paths.x_validation_path, paths.y_validation_path, 2, 10, 5)
 
-def train_model2(x_train_path, y_train_path, x_validation_path, y_validation_path, batch_size, steps_per_epoch,
-                 training_epochs):
-    """
-    Creates the model with the loss function and optimizer
-    Creates the generators for generating input and target images
-    Trains the model with the training data and saves it when done.
-
-    :param x_train_path: The path of the input training images
-    :param y_train_path: The path of the target training images
-    :param x_test_path: The path of the input validation images
-    :param y_test_path: The path of the target validation images
-    :param batch_size: The number of images to be generated per batch
-    :param steps_per_epoch: The number of images used per epoch
-    :param epochs: The number of epochs the training is done for
-    """
-
-    model = create_simple_model()
-    x_train_folder = glob.glob((x_train_path + '\\input\\*.jpg'))
-    y_train_folder = glob.glob((y_train_path + '\\target\\*.jpg'))
-    x_test_folder = glob.glob((x_validation_path + '\\input\\*.jpg'))
-    y_test_folder = glob.glob((y_validation_path + '\\target\\*.jpg'))
-    x_train = np.empty((150, 500, 350, 3))
-    y_train = np.empty((150, 500, 350, 1))
-    while len(x_train_folder) / 150 >= 1:
-        for i in range(0, 150):
-            ind = random.randint(0, len(x_train_folder))
-            x_train[i] = cv2.imread(x_train_folder[ind])
-            y_train[i] = cv2.imread(y_train_folder[ind], cv2.IMREAD_GRAYSCALE).reshape(500, 350, 1)
-            del x_train_folder[ind]
-            del y_train_folder[ind]
-            x_train = x_train.astype('float32')
-            x_train /= 255
-            y_train = y_train.astype('float32')
-            y_train /= 255
-        model.fit(x_train, y_train, epochs=training_epochs, batch_size=batch_size)
-    x_train = np.empty((len(x_train_folder), 500, 350, 3))
-    y_train = np.empty((len(y_train_folder), 500, 350, 1))
-    for i in range(0, len(x_train_folder)):
-        x_train[i] = cv2.imread(x_train_folder[ind])
-        y_train[i] = cv2.imread(y_train_folder[ind], cv2.IMREAD_GRAYSCALE).reshape(500, 350, 1)
-        x_train = x_train.astype('float32')
-        x_train /= 255
-        y_train = y_train.astype('float32')
-        y_train /= 255
-    model.fit(x_train, y_train, epochs=training_epochs, batch_size=batch_size)
-    model.save('models\\simp_model.h5')
-    print('Model saved')
-
-
-#train_model(paths.x_train_path, paths.y_train_path, paths.x_validation_path, paths.y_validation_path, 2, 50, 2)
-# train_model2(paths.x_train_path, paths.y_train_path, paths.x_validation_path, paths.y_validation_path, 8, 20, 10)
