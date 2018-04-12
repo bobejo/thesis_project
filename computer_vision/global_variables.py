@@ -2,8 +2,8 @@ import numpy as np
 
 # Cropping
 # VLH   (height,width)
-lcrop = [(270, 850), (120, 540)]
-rcrop = [(150, 730), (650, 1070)]
+lcrop = [[(270, 850), (120, 540)], [(270, 850), (120, 540)], [(270, 850), (120, 540)]]
+rcrop = [[(150, 730), (650, 1070)], [(150, 730), (650, 1070)], [(150, 730), (650, 1070)]]
 
 # Binary threshold
 threshold = 0.4
@@ -14,17 +14,17 @@ dilation_size = 2
 H = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 # Rotation matrix and translation
 # Use image_registration.find_image_transformation()
-#right to left
+# right to left
 """
 A = np.array([[1.00193027, 0.01751188], [-0.04496408, 1.00595537]])
 t = np.array([-547.21745223, -112.81193411])
 """
 # Chosen with choose_points left to right
-A = np.array([[0.99426429, -0.02191584], [0.04492097, 0.99363468]])
-t = np.array([495.43277927, -88.79672629])
+A = np.array([[0.95967967, 0.00758962], [-0.01423037, 0.97860608]])
+t = np.array([488, -25])
 
 # Transformation matrix between camera frame and base frame
-T = np.array([[-1, 0, 0, 0], [0, 1, 0, -682], [0, 0, 1, 833]])
+T = np.array([[-1, 0, 0, 0], [0, 1, 0, -605], [0, 0, 1, 706]])
 
 # Intrinsic and distortion parameters
 K1 = np.array(
