@@ -80,18 +80,21 @@ def find_3D_point(model, position):
     "Finds the 3D point in camera frame, using triangulation, and convert to base frame."
 
     # Load camera matrices
-    # lcm = np.genfromtxt(paths.left_matrix_path)
-    # rcm = np.genfromtxt(paths.right_matrix_path)
-    lcm = np.genfromtxt('lcm_vlh4.txt')
-    rcm = np.genfromtxt('rcm_vlh4.txt')
+    lcm = np.genfromtxt(paths.left_matrix_path)
+    rcm = np.genfromtxt(paths.right_matrix_path)
+    #lcm = np.genfromtxt('lcm_vlh4.txt')
+    #rcm = np.genfromtxt('rcm_vlh4.txt')
     # Triangulate
     tri_camera = gf.triangulate_point(gripping_point_left_full, gripping_point_right_full, rcm, lcm)
-
+    y_error=180
+    min_y=-570
     # Convert to base frame
     gripping_point_base = ir.base_transform(gv.T, tri_camera)
-    gripping_point_base[0] = gripping_point_base[0][0] - 200
-    gripping_point_base[1] = gripping_point_base[1][0]
-    gripping_point_base[2] = gripping_point_base[2][0]
+    gripping_point_base[0] = gripping_point_base[0][0]-45
+    gripping_point_base[1] = gripping_point_base[1][0]-450
+    if gripping_point_base[1][0]/min_y>1:
+        gripping_point_base[1] = gripping_point_base[1][0]+(gripping_point_base[1][0]/min_y-1)*y_error
+    gripping_point_base[2] = gripping_point_base[2][0]+1245
     print('X: ', gripping_point_base[0])
     print('Y: ', gripping_point_base[1])
     print('Z: ', gripping_point_base[2])
