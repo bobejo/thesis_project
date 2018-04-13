@@ -82,32 +82,47 @@ def find_3D_point(model, position):
     # Load camera matrices
     lcm = np.genfromtxt(paths.left_matrix_path)
     rcm = np.genfromtxt(paths.right_matrix_path)
-    #lcm = np.genfromtxt('lcm_vlh4.txt')
-    #rcm = np.genfromtxt('rcm_vlh4.txt')
+    # lcm = np.genfromtxt('lcm_vlh3.txt')
+    # rcm = np.genfromtxt('rcm_vlh3.txt')
     # Triangulate
     tri_camera = gf.triangulate_point(gripping_point_left_full, gripping_point_right_full, rcm, lcm)
-    y_error=180
-    min_y=-570
+
     # Convert to base frame
     gripping_point_base = ir.base_transform(gv.T, tri_camera)
-    gripping_point_base[0] = gripping_point_base[0][0]-45
-    gripping_point_base[1] = gripping_point_base[1][0]-450
-    if gripping_point_base[1][0]/min_y>1:
-        gripping_point_base[1] = gripping_point_base[1][0]+(gripping_point_base[1][0]/min_y-1)*y_error
-    gripping_point_base[2] = gripping_point_base[2][0]+1245
+    gripping_point_base=correct_gripping_point(gripping_point_base)
+
     print('X: ', gripping_point_base[0])
     print('Y: ', gripping_point_base[1])
     print('Z: ', gripping_point_base[2])
     print('Gripping angle: ', gripping_angle, ' degrees')
-    cv2.imshow('cr', cropped_left)
+    # cv2.imshow('cr', cropped_left)
     cv2.imshow('Prediction', p)
     cv2.imshow('fullLeft', l_img)
     cv2.imshow('fullRight', r_img)
     cv2.imshow('cont', cont)
 
     cv2.waitKey(0)
-    return gripping_point_base, gripping_angle
 
+    return [gripping_point_base[0][0], gripping_point_base[1][0], gripping_point_base[2][0]], gripping_angle
+def correct_gripping_point(gripping_point_base):
+    """
+    Fixes the error of the reprojected grasping points.
+    Not necessary if camera projection matrices correct
+    :param The gripping point in base frame
+    :return The corrected gripping point
+    """
+    z_error = 182
+    min_y = -574.7
+    max_y = -1031
+    y_frac = min_y / max_y
+    gripping_point_base[0] = gripping_point_base[0][0] - 170
+    gripping_point_base[1] = gripping_point_base[1][0] - 55
+    gripping_point_base[2] = gripping_point_base[2][0] + 100
+
+    if gripping_point_base[1][0] / min_y > 1:
+        gripping_point_base[2] = gripping_point_base[2] - (gripping_point_base[1][0] / max_y - y_frac) * z_error * 2
+
+    return gripping_point_base
 
 if __name__ == "__main__":
     model = keras.models.load_model(paths.model_path)
@@ -115,3 +130,4 @@ if __name__ == "__main__":
     model.summary()
     for i in range(0, 100):
         gripping_points, gripping_angle = find_3D_point(model, 2)
+        print(gripping_points)
