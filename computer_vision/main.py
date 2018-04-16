@@ -23,6 +23,9 @@ def find_pipe(component):
 
     :return: The 3D gripping point in robot base frame and the gripping angle.
     """
+    lcm = np.genfromtxt(paths.left_matrix_path)
+    rcm = np.genfromtxt(paths.right_matrix_path)
+
     if component == 1:
         model = keras.models.load_model(paths.model_pipe_path)
     else:
@@ -46,7 +49,15 @@ def find_pipe(component):
     gripping_point_right_full = ir.affine_transformation(gv.A, gv.t, gripping_point_left_full)
     gripping_point_right_full = (int(round(gripping_point_right_full[0])), int(round(gripping_point_right_full[1])))
 
-    return gripping_point_left_full, gripping_point_right_full, gripping_angle, cont, p
+    # Triangulate
+
+    tri_camera = gf.triangulate_point(gripping_point_left_full, gripping_point_right_full, rcm, lcm)
+
+    # Convert to base frame
+    gripping_point_base = ir.base_transform(gv.T, tri_camera)
+    gripping_point_base = correct_gripping_point(gripping_point_base)
+
+    return gripping_point_base, gripping_angle, cont, p
 
 
 def find_oilfilter(limg):
@@ -55,13 +66,24 @@ def find_oilfilter(limg):
     :param limg: The cropped image from left camera
     :return: The 3D gripping point in robot base frame and the gripping angle.
     """
+    lcm = np.genfromtxt(paths.left_matrix_path)
+    rcm = np.genfromtxt(paths.right_matrix_path)
+
     gripping_point_left, p = gf.circle_detector(limg)
     gripping_point_left_full = (
         gripping_point_left[0] + gv.lcrop[0][1][0] - 1, gripping_point_left[1] + gv.lcrop[0][0][0] - 1)
     gripping_point_right_full = ir.affine_transformation(gv.A_oilfilter, gv.t_oilfilter, gripping_point_left_full)
     gripping_point_right_full = (int(round(gripping_point_right_full[0])), int(round(gripping_point_right_full[1])))
 
-    return gripping_point_left_full, gripping_point_right_full, 0, p
+    # Triangulate
+
+    tri_camera = gf.triangulate_point(gripping_point_left_full, gripping_point_right_full, rcm, lcm)
+
+    # Convert to base frame
+    gripping_point_base = ir.base_transform(gv.T, tri_camera)
+    gripping_point_base = correct_gripping_point_oil(gripping_point_base)
+
+    return gripping_point_base, 0, p
 
 
 def find_3D_point(component):
@@ -83,37 +105,23 @@ def find_3D_point(component):
 
     "Decide what to pick"
     if component == 0:
-        gripping_point_left_full, gripping_point_right_full, gripping_angle, cont = find_oilfilter(cropped_left)
+        gripping_point_base, gripping_angle, cont = find_oilfilter(cropped_left)
     else:
-        gripping_point_left_full,gripping_point_right_full, gripping_angle, cont, p = find_pipe(component)
+        gripping_point_base, gripping_angle, cont, p = find_pipe(component)
         cv2.imshow('Prediction', p)
 
     # Find the points in right image
 
-    # Triangulate
-    lcm = np.genfromtxt(paths.left_matrix_path)
-    rcm = np.genfromtxt(paths.right_matrix_path)
-
-    tri_camera = gf.triangulate_point(gripping_point_left_full, gripping_point_right_full, rcm, lcm)
-
-    # Convert to base frame
-    gripping_point_base = ir.base_transform(gv.T, tri_camera)
-    gripping_point_base = correct_gripping_point(gripping_point_base)
-
     # Plotting
-    l_img = cv2.imread(l_img)
-    r_img = cv2.imread(r_img)
-    cv2.circle(l_img, gripping_point_left_full, 3, (255, 0, 0), 3)
-    cv2.circle(r_img, gripping_point_right_full, 3, (255, 0, 0), 3)
+    # l_img = cv2.imread(l_img)
+    # r_img = cv2.imread(r_img)
+
     print('X: ', gripping_point_base[0])
     print('Y: ', gripping_point_base[1])
     print('Z: ', gripping_point_base[2])
     print('Gripping angle: ', gripping_angle, ' degrees')
     cv2.imshow('cont', cont)
 
-    #cv2.imshow('fullLeft', l_img)
-    #plt.imshow(r_img)
-    #plt.show()
     cv2.waitKey(0)
 
     return [gripping_point_base[0][0], gripping_point_base[1][0], gripping_point_base[2][0]], gripping_angle
@@ -140,8 +148,32 @@ def correct_gripping_point(gripping_point_base):
     return gripping_point_base
 
 
+def correct_gripping_point_oil(gripping_point_base):
+    """
+    Fixes the error of the reprojected grasping points.
+    Not necessary if camera projection matrices correct
+    :param The gripping point in base frame
+    :return The corrected gripping point
+    """
+    z_error = 130
+    x_error = 15
+    min_y = -613
+    max_y = -985
+
+    y_frac = min_y / max_y
+    gripping_point_base[0] = gripping_point_base[0][0] - 143
+    gripping_point_base[1] = gripping_point_base[1][0] + 13
+    gripping_point_base[2] = gripping_point_base[2][0] + 36
+
+    if gripping_point_base[1] / min_y > 1:
+        gripping_point_base[2] = gripping_point_base[2] - (gripping_point_base[1] / max_y - y_frac) * z_error * 2
+        gripping_point_base[0] = gripping_point_base[0] - (gripping_point_base[1] / (-max_y) - y_frac) * x_error * 2
+
+    return gripping_point_base
+
+
 if __name__ == "__main__":
 
     for i in range(0, 100):
         gripping_points, gripping_angle = find_3D_point(0)
-        #gripping_points, gripping_angle = find_3D_point(1)
+        # gripping_points, gripping_angle = find_3D_point(1)
