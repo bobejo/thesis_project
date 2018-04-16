@@ -1,14 +1,22 @@
 import numpy as np
 
-# Cropping
-# VLH   (height,width)
-lcrop = [[(270, 850), (120, 540)], [(270, 850), (120, 540)], [(270, 850), (120, 540)]]
-rcrop = [[(150, 730), (650, 1070)], [(150, 730), (650, 1070)], [(150, 730), (650, 1070)]]
+# Cropping sizes
+# [Oilfilter,pipe,upipe] [0,1,2]
+# VLH   (height1,height2),(width1,width2)
+
+#
+
+lcrop = [[(200, 850), (950, 1400)], [(270, 850), (120, 540)], [(270, 850), (120, 540)]]
+rcrop = [[(150, 800), (1475, 1950)], [(150, 730), (650, 1070)], [(150, 730), (650, 1070)]]
+
+center_oilfilter = (0, 0)
+center_upipe = ()
+center_pipe = (0, 0)
 
 # Binary threshold
-threshold = 0.35
+threshold = 0.32
 # Dilation size
-dilation_size = 2
+dilation_size = 3
 
 # Projective
 H = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
@@ -19,6 +27,8 @@ H = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 # Chosen with choose_points left to right
 A = np.array([[1.00346938, 0.01570419], [-0.01536945, 0.99532346]])
 t = np.array([452.27628291, -31.33095023])
+A_oilfilter = np.array([[0.95104479, -0.00696684], [-0.00106112, 0.99532346]])
+t_oilfilter = np.array([587.91800977, -48.1073716])
 """
 A = np.array([[0.95967967, 0.00758962], [-0.01423037, 0.97860608]])
 t = np.array([488, -25])
