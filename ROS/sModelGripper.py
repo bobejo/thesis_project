@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-
+"""
+Setting different modes of operation for Robotic 3_finger_S_Model_Gripper
+"""
 import rospy
 
 from robotiq_s_model_control.msg import _SModel_robot_output  as outputMsg
